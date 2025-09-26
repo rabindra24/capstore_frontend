@@ -1,7 +1,8 @@
-import { Search, Bell, User, Menu } from "lucide-react";
+import { Search, Bell, User, Menu, LayoutDashboard, Package, Users, ShoppingCart, Calendar, MessageSquare, BarChart3, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { NavLink } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,11 +13,21 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 
+const navigationItems = [
+  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+  { title: "Inventory", url: "/inventory", icon: Package },
+  { title: "Employees", url: "/employees", icon: Users },
+  { title: "Orders", url: "/orders", icon: ShoppingCart },
+  { title: "Meetings", url: "/meetings", icon: Calendar },
+  { title: "Messages", url: "/chat", icon: MessageSquare },
+  { title: "Analytics", url: "/analytics", icon: BarChart3 },
+];
+
 export function AppHeader() {
   return (
     <header className="flex h-16 items-center justify-between border-b border-border bg-card px-6 shadow-card">
       {/* Left side - Sidebar trigger and search */}
-      <div className="flex items-center gap-4 flex-1">
+      <div className="flex items-center gap-4">
         <SidebarTrigger className="hover:bg-sidebar-accent" />
         
         <div className="relative max-w-md">
@@ -27,6 +38,26 @@ export function AppHeader() {
           />
         </div>
       </div>
+
+      {/* Center - Main Navigation */}
+      <nav className="hidden lg:flex items-center gap-1 flex-1 justify-center">
+        {navigationItems.map((item) => (
+          <NavLink
+            key={item.title}
+            to={item.url}
+            className={({ isActive }) =>
+              `flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-muted ${
+                isActive 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`
+            }
+          >
+            <item.icon className="w-4 h-4" />
+            <span>{item.title}</span>
+          </NavLink>
+        ))}
+      </nav>
 
       {/* Right side - Notifications and profile */}
       <div className="flex items-center gap-3">

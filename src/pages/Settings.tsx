@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useTheme } from "@/components/theme-provider";
 import {
   Select,
   SelectContent,
@@ -76,6 +77,54 @@ const integrations = [
     lastSync: null,
   },
 ];
+
+const ThemeSelector = () => {
+  const { theme, setTheme } = useTheme();
+
+  const themes = [
+    {
+      name: "light",
+      label: "Light",
+      description: "Clean and bright interface",
+      preview: "bg-gradient-to-br from-background to-secondary"
+    },
+    {
+      name: "dark", 
+      label: "Dark",
+      description: "Easy on the eyes",
+      preview: "bg-gradient-to-br from-gray-900 to-gray-800"
+    },
+    {
+      name: "system",
+      label: "Auto", 
+      description: "Matches system preference", 
+      preview: "bg-gradient-to-br from-background via-gray-800 to-background"
+    }
+  ];
+
+  return (
+    <div className="space-y-4">
+      <h4 className="font-semibold">Theme</h4>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {themes.map((themeOption) => (
+          <div
+            key={themeOption.name}
+            onClick={() => setTheme(themeOption.name as "light" | "dark" | "system")}
+            className={`p-4 rounded-lg cursor-pointer transition-smooth ${
+              theme === themeOption.name
+                ? "border-2 border-primary"
+                : "border border-border hover:border-primary"
+            }`}
+          >
+            <div className={`w-full h-20 ${themeOption.preview} rounded mb-3`}></div>
+            <div className="font-medium">{themeOption.label}</div>
+            <div className="text-sm text-muted-foreground">{themeOption.description}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState("profile");
@@ -490,26 +539,7 @@ export default function Settings() {
               <CardDescription>Customize the look and feel of your dashboard</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <h4 className="font-semibold">Theme</h4>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="p-4 border-2 border-primary rounded-lg cursor-pointer">
-                    <div className="w-full h-20 bg-gradient-to-br from-background to-secondary rounded mb-3"></div>
-                    <div className="font-medium">Light</div>
-                    <div className="text-sm text-muted-foreground">Clean and bright interface</div>
-                  </div>
-                  <div className="p-4 border border-border rounded-lg cursor-pointer hover:border-primary transition-smooth">
-                    <div className="w-full h-20 bg-gradient-to-br from-gray-900 to-gray-800 rounded mb-3"></div>
-                    <div className="font-medium">Dark</div>
-                    <div className="text-sm text-muted-foreground">Easy on the eyes</div>
-                  </div>
-                  <div className="p-4 border border-border rounded-lg cursor-pointer hover:border-primary transition-smooth">
-                    <div className="w-full h-20 bg-gradient-to-br from-background via-gray-800 to-background rounded mb-3"></div>
-                    <div className="font-medium">Auto</div>
-                    <div className="text-sm text-muted-foreground">Matches system preference</div>
-                  </div>
-                </div>
-              </div>
+              <ThemeSelector />
 
               <div className="border-t pt-6">
                 <h4 className="font-semibold mb-4">Density</h4>

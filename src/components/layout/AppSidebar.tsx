@@ -6,6 +6,7 @@ import {
   Users,
   ShoppingCart,
   Calendar,
+  MessageSquare,
   BarChart3,
   Settings,
   Brain,
@@ -51,6 +52,11 @@ const navigationItems = [
     title: "Meetings",
     url: "/meetings",
     icon: Calendar,
+  },
+  {
+    title: "Messages",
+    url: "/chat",
+    icon: MessageSquare,
   },
   {
     title: "Analytics",

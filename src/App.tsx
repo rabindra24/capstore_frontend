@@ -12,6 +12,7 @@ import Inventory from "./pages/Inventory";
 import Employees from "./pages/Employees";
 import Orders from "./pages/Orders";
 import Meetings from "./pages/Meetings";
+import Chat from "./pages/Chat";
 import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="employees" element={<Employees />} />
             <Route path="orders" element={<Orders />} />
             <Route path="meetings" element={<Meetings />} />
+            <Route path="chat" element={<Chat />} />
             <Route path="analytics" element={<Analytics />} />
             <Route path="settings" element={<Settings />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

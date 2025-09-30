@@ -1,4 +1,4 @@
-import { Search, Bell, User, Menu, LayoutDashboard, Package, Users, ShoppingCart, Calendar, MessageSquare, BarChart3, Settings } from "lucide-react";
+import { Search, Bell, User, Menu, LayoutDashboard, Package, Users, ShoppingCart, Calendar, MessageSquare, BarChart3, Settings, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -19,6 +19,7 @@ const navigationItems = [
   { title: "Employees", url: "/employees", icon: Users },
   { title: "Orders", url: "/orders", icon: ShoppingCart },
   { title: "Meetings", url: "/meetings", icon: Calendar },
+  { title: "Mail", url: "/mail", icon: Mail },
   { title: "Messages", url: "/chat", icon: MessageSquare },
   { title: "Analytics", url: "/analytics", icon: BarChart3 },
 ];

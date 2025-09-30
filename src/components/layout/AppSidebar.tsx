@@ -11,6 +11,7 @@ import {
   Settings,
   Brain,
   LogOut,
+  Mail,
 } from "lucide-react";
 import {
   Sidebar,
@@ -52,6 +53,11 @@ const navigationItems = [
     title: "Meetings",
     url: "/meetings",
     icon: Calendar,
+  },
+  {
+    title: "Mail",
+    url: "/mail",
+    icon: Mail,
   },
   {
     title: "Messages",

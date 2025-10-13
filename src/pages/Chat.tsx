@@ -114,7 +114,7 @@ export default function Chat() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-2rem)] bg-background rounded-lg border overflow-hidden">
+    <div className="flex h-[calc(100vh-12rem)] bg-background rounded-lg border overflow-hidden">
       {/* Chat List Sidebar */}
       <div className="w-80 border-r bg-muted/30">
         {/* Search Header */}

@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useTheme } from "@/components/theme-provider";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -157,32 +158,35 @@ export default function Settings() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-6">
-          <TabsTrigger value="profile" className="flex items-center gap-2">
-            <User className="w-4 h-4" />
-            <span className="hidden sm:inline">Profile</span>
-          </TabsTrigger>
-          <TabsTrigger value="business" className="flex items-center gap-2">
-            <Building className="w-4 h-4" />
-            <span className="hidden sm:inline">Business</span>
-          </TabsTrigger>
-          <TabsTrigger value="notifications" className="flex items-center gap-2">
-            <Bell className="w-4 h-4" />
-            <span className="hidden sm:inline">Notifications</span>
-          </TabsTrigger>
-          <TabsTrigger value="security" className="flex items-center gap-2">
-            <Shield className="w-4 h-4" />
-            <span className="hidden sm:inline">Security</span>
-          </TabsTrigger>
-          <TabsTrigger value="appearance" className="flex items-center gap-2">
-            <Palette className="w-4 h-4" />
-            <span className="hidden sm:inline">Appearance</span>
-          </TabsTrigger>
-          <TabsTrigger value="integrations" className="flex items-center gap-2">
-            <Zap className="w-4 h-4" />
-            <span className="hidden sm:inline">Integrations</span>
-          </TabsTrigger>
-        </TabsList>
+        <ScrollArea className="w-full whitespace-nowrap">
+          <TabsList className="inline-flex h-11 items-center justify-start rounded-md bg-muted p-1 text-muted-foreground w-full lg:w-auto">
+            <TabsTrigger value="profile" className="flex items-center gap-2 px-3">
+              <User className="w-4 h-4" />
+              <span>Profile</span>
+            </TabsTrigger>
+            <TabsTrigger value="business" className="flex items-center gap-2 px-3">
+              <Building className="w-4 h-4" />
+              <span>Business</span>
+            </TabsTrigger>
+            <TabsTrigger value="notifications" className="flex items-center gap-2 px-3">
+              <Bell className="w-4 h-4" />
+              <span>Notifications</span>
+            </TabsTrigger>
+            <TabsTrigger value="security" className="flex items-center gap-2 px-3">
+              <Shield className="w-4 h-4" />
+              <span>Security</span>
+            </TabsTrigger>
+            <TabsTrigger value="appearance" className="flex items-center gap-2 px-3">
+              <Palette className="w-4 h-4" />
+              <span>Appearance</span>
+            </TabsTrigger>
+            <TabsTrigger value="integrations" className="flex items-center gap-2 px-3">
+              <Zap className="w-4 h-4" />
+              <span>Integrations</span>
+            </TabsTrigger>
+          </TabsList>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
 
         {/* Profile Settings */}
         <TabsContent value="profile" className="space-y-6">

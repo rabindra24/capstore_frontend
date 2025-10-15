@@ -158,35 +158,56 @@ export default function Settings() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <ScrollArea className="w-full whitespace-nowrap">
-          <TabsList className="inline-flex h-11 items-center justify-start rounded-md bg-muted p-1 text-muted-foreground w-full lg:w-auto">
-            <TabsTrigger value="profile" className="flex items-center gap-2 px-3">
-              <User className="w-4 h-4" />
-              <span>Profile</span>
-            </TabsTrigger>
-            <TabsTrigger value="business" className="flex items-center gap-2 px-3">
-              <Building className="w-4 h-4" />
-              <span>Business</span>
-            </TabsTrigger>
-            <TabsTrigger value="notifications" className="flex items-center gap-2 px-3">
-              <Bell className="w-4 h-4" />
-              <span>Notifications</span>
-            </TabsTrigger>
-            <TabsTrigger value="security" className="flex items-center gap-2 px-3">
-              <Shield className="w-4 h-4" />
-              <span>Security</span>
-            </TabsTrigger>
-            <TabsTrigger value="appearance" className="flex items-center gap-2 px-3">
-              <Palette className="w-4 h-4" />
-              <span>Appearance</span>
-            </TabsTrigger>
-            <TabsTrigger value="integrations" className="flex items-center gap-2 px-3">
-              <Zap className="w-4 h-4" />
-              <span>Integrations</span>
-            </TabsTrigger>
-          </TabsList>
-          <ScrollBar orientation="horizontal" />
-        </ScrollArea>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          <Button
+            variant={activeTab === "profile" ? "default" : "outline"}
+            onClick={() => setActiveTab("profile")}
+            className="flex items-center justify-center gap-2 h-auto py-3"
+          >
+            <User className="w-4 h-4" />
+            <span>Profile</span>
+          </Button>
+          <Button
+            variant={activeTab === "business" ? "default" : "outline"}
+            onClick={() => setActiveTab("business")}
+            className="flex items-center justify-center gap-2 h-auto py-3"
+          >
+            <Building className="w-4 h-4" />
+            <span>Business</span>
+          </Button>
+          <Button
+            variant={activeTab === "notifications" ? "default" : "outline"}
+            onClick={() => setActiveTab("notifications")}
+            className="flex items-center justify-center gap-2 h-auto py-3"
+          >
+            <Bell className="w-4 h-4" />
+            <span>Notifications</span>
+          </Button>
+          <Button
+            variant={activeTab === "security" ? "default" : "outline"}
+            onClick={() => setActiveTab("security")}
+            className="flex items-center justify-center gap-2 h-auto py-3"
+          >
+            <Shield className="w-4 h-4" />
+            <span>Security</span>
+          </Button>
+          <Button
+            variant={activeTab === "appearance" ? "default" : "outline"}
+            onClick={() => setActiveTab("appearance")}
+            className="flex items-center justify-center gap-2 h-auto py-3"
+          >
+            <Palette className="w-4 h-4" />
+            <span>Appearance</span>
+          </Button>
+          <Button
+            variant={activeTab === "integrations" ? "default" : "outline"}
+            onClick={() => setActiveTab("integrations")}
+            className="flex items-center justify-center gap-2 h-auto py-3"
+          >
+            <Zap className="w-4 h-4" />
+            <span>Integrations</span>
+          </Button>
+        </div>
 
         {/* Profile Settings */}
         <TabsContent value="profile" className="space-y-6">

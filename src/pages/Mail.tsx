@@ -1,11 +1,14 @@
 import { useState } from "react";
-import { Search, Star, Inbox, Send, File, Trash2, Archive, Mail as MailIcon, Clock, Filter, PaperclipIcon, Reply, Forward, MoreVertical } from "lucide-react";
+import { Search, Star, Inbox, Send, File, Trash2, Archive, Mail as MailIcon, Clock, Filter, PaperclipIcon, Reply, Forward, MoreVertical, Menu, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const folders = [
   { name: "Inbox", icon: Inbox, count: 12, active: true },
@@ -77,54 +80,111 @@ const emails = [
 export default function Mail() {
   const [selectedEmail, setSelectedEmail] = useState(emails[0]);
   const [selectedFolder, setSelectedFolder] = useState("Inbox");
+  const [showEmailList, setShowEmailList] = useState(true);
+  const [foldersOpen, setFoldersOpen] = useState(false);
+  const isMobile = useIsMobile();
+
+  const folderSidebar = (
+    <div className="bg-card rounded-lg border border-border p-4 flex flex-col gap-4 h-full">
+      <Button className="w-full">
+        <MailIcon className="w-4 h-4 mr-2" />
+        Compose
+      </Button>
+
+      <ScrollArea className="flex-1">
+        <div className="space-y-1">
+          {folders.map((folder) => (
+            <button
+              key={folder.name}
+              onClick={() => {
+                setSelectedFolder(folder.name);
+                setFoldersOpen(false);
+              }}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors ${
+                selectedFolder === folder.name
+                  ? "bg-primary text-primary-foreground"
+                  : "hover:bg-muted text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <folder.icon className="w-4 h-4" />
+                <span>{folder.name}</span>
+              </div>
+              {folder.count > 0 && (
+                <Badge variant={selectedFolder === folder.name ? "secondary" : "outline"}>
+                  {folder.count}
+                </Badge>
+              )}
+            </button>
+          ))}
+        </div>
+      </ScrollArea>
+    </div>
+  );
 
   return (
     <div className="h-[calc(100vh-8rem)] flex gap-4">
-      {/* Left Sidebar - Folders */}
-      <div className="w-64 bg-card rounded-lg border border-border p-4 flex flex-col gap-4">
-        <Button className="w-full">
-          <MailIcon className="w-4 h-4 mr-2" />
-          Compose
-        </Button>
+      {/* Left Sidebar - Folders (Desktop) */}
+      {!isMobile && (
+        <div className="w-64 bg-card rounded-lg border border-border p-4 flex flex-col gap-4">
+          <Button className="w-full">
+            <MailIcon className="w-4 h-4 mr-2" />
+            Compose
+          </Button>
 
-        <ScrollArea className="flex-1">
-          <div className="space-y-1">
-            {folders.map((folder) => (
-              <button
-                key={folder.name}
-                onClick={() => setSelectedFolder(folder.name)}
-                className={`w-full flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors ${
-                  selectedFolder === folder.name
-                    ? "bg-primary text-primary-foreground"
-                    : "hover:bg-muted text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  <folder.icon className="w-4 h-4" />
-                  <span>{folder.name}</span>
-                </div>
-                {folder.count > 0 && (
-                  <Badge variant={selectedFolder === folder.name ? "secondary" : "outline"}>
-                    {folder.count}
-                  </Badge>
-                )}
-              </button>
-            ))}
-          </div>
-        </ScrollArea>
-      </div>
+          <ScrollArea className="flex-1">
+            <div className="space-y-1">
+              {folders.map((folder) => (
+                <button
+                  key={folder.name}
+                  onClick={() => setSelectedFolder(folder.name)}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors ${
+                    selectedFolder === folder.name
+                      ? "bg-primary text-primary-foreground"
+                      : "hover:bg-muted text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <folder.icon className="w-4 h-4" />
+                    <span>{folder.name}</span>
+                  </div>
+                  {folder.count > 0 && (
+                    <Badge variant={selectedFolder === folder.name ? "secondary" : "outline"}>
+                      {folder.count}
+                    </Badge>
+                  )}
+                </button>
+              ))}
+            </div>
+          </ScrollArea>
+        </div>
+      )}
 
       {/* Middle - Email List */}
-      <div className="w-96 bg-card rounded-lg border border-border flex flex-col">
+      <div className={`${isMobile ? (showEmailList ? 'flex' : 'hidden') : 'flex'} ${isMobile ? 'w-full' : 'w-96'} bg-card rounded-lg border border-border flex-col`}>
         <div className="p-4 border-b border-border">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            <Input
-              placeholder="Search mail..."
-              className="pl-10 bg-background"
-            />
+          <div className="flex items-center gap-2 mb-3">
+            {isMobile && (
+              <Sheet open={foldersOpen} onOpenChange={setFoldersOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="icon">
+                    <Menu className="w-4 h-4" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-64 p-0">
+                  {folderSidebar}
+                </SheetContent>
+              </Sheet>
+            )}
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+              <Input
+                placeholder="Search mail..."
+                className="pl-10 bg-background"
+              />
+            </div>
           </div>
-          <div className="flex items-center gap-2 mt-3">
+          <div className="flex items-center gap-2">
             <Button variant="outline" size="sm">
               <Filter className="w-4 h-4 mr-2" />
               Filter
@@ -141,7 +201,10 @@ export default function Mail() {
             {emails.map((email) => (
               <button
                 key={email.id}
-                onClick={() => setSelectedEmail(email)}
+                onClick={() => {
+                  setSelectedEmail(email);
+                  if (isMobile) setShowEmailList(false);
+                }}
                 className={`w-full p-4 text-left hover:bg-muted transition-colors ${
                   selectedEmail.id === email.id ? "bg-muted" : ""
                 } ${email.unread ? "bg-muted/30" : ""}`}
@@ -182,8 +245,19 @@ export default function Mail() {
       </div>
 
       {/* Right - Email Content */}
-      <div className="flex-1 bg-card rounded-lg border border-border flex flex-col">
-        <div className="p-6 border-b border-border">
+      <div className={`${isMobile ? (showEmailList ? 'hidden' : 'flex') : 'flex'} flex-1 bg-card rounded-lg border border-border flex-col`}>
+        <div className="p-4 md:p-6 border-b border-border">
+          {isMobile && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowEmailList(true)}
+              className="mb-4"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to emails
+            </Button>
+          )}
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-start gap-3">
               <Avatar className="w-10 h-10">
@@ -212,7 +286,7 @@ export default function Mail() {
           </div>
         </div>
 
-        <ScrollArea className="flex-1 p-6">
+        <ScrollArea className="flex-1 p-4 md:p-6">
           <div className="prose prose-sm max-w-none">
             <p className="text-foreground">
               {selectedEmail.preview}
@@ -236,22 +310,22 @@ export default function Mail() {
 
         <Separator />
 
-        <div className="p-4 flex items-center gap-2">
-          <Button>
+        <div className="p-4 flex items-center gap-2 overflow-x-auto">
+          <Button size={isMobile ? "sm" : "default"}>
             <Reply className="w-4 h-4 mr-2" />
-            Reply
+            {!isMobile && "Reply"}
           </Button>
-          <Button variant="outline">
+          <Button variant="outline" size={isMobile ? "sm" : "default"}>
             <Forward className="w-4 h-4 mr-2" />
-            Forward
+            {!isMobile && "Forward"}
           </Button>
-          <Button variant="outline">
+          <Button variant="outline" size={isMobile ? "sm" : "default"}>
             <Archive className="w-4 h-4 mr-2" />
-            Archive
+            {!isMobile && "Archive"}
           </Button>
-          <Button variant="outline">
+          <Button variant="outline" size={isMobile ? "sm" : "default"}>
             <Trash2 className="w-4 h-4 mr-2" />
-            Delete
+            {!isMobile && "Delete"}
           </Button>
         </div>
       </div>

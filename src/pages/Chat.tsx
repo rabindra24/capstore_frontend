@@ -29,7 +29,7 @@ interface Message {
 const mockChats: Chat[] = [
   {
     id: '1',
-    name: 'John Doe',
+    name: 'Sahana',
     lastMessage: 'Hey, how are you doing?',
     timestamp: '2:30 PM',
     unread: 2,
@@ -37,25 +37,25 @@ const mockChats: Chat[] = [
   },
   {
     id: '2',
-    name: 'Sarah Wilson',
-    lastMessage: 'The meeting is scheduled for tomorrow',
+    name: 'Manas',
+    lastMessage: ' save me from priyanshu bhai , Please!',
     timestamp: '1:45 PM',
     unread: 0,
     isOnline: false
   },
   {
     id: '3',
-    name: 'Team Marketing',
-    lastMessage: 'Great job on the campaign!',
+    name: 'Yash PES',
+    lastMessage: 'Let Get Revolution',
     timestamp: '12:15 PM',
     unread: 5,
     isOnline: true
   },
   {
     id: '4',
-    name: 'Alex Chen',
-    lastMessage: 'Can you send me the report?',
-    timestamp: '11:30 AM',
+    name: 'Maniratnam',
+    lastMessage: 'MRD to lana padga',
+    timestamp: '10:45 AM ',
     unread: 1,
     isOnline: true
   }
@@ -183,7 +183,7 @@ export default function Chat() {
     <div className="flex h-[calc(100vh-8rem)] bg-background rounded-lg shadow-elegant overflow-hidden">
       {/* Chat List Sidebar - Desktop */}
       {!isMobile && (
-        <div className="w-80 border-r border-border/50 bg-card/30 backdrop-blur-sm">
+        <div className="flex-1 border-r border-border/50 bg-card/30 backdrop-blur-sm">
           {/* Search Header */}
           <div className="p-4 border-b border-border/50">
             <div className="relative">

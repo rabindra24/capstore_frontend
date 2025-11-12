@@ -100,8 +100,8 @@ export function AppSidebar() {
           </div>
           {!isCollapsed && (
             <div className="flex flex-col">
-              <span className="font-semibold text-sm">AI Business</span>
-              <span className="text-xs text-muted-foreground">Assistant</span>
+              <span className="font-semibold text-sm">VirtuWork</span>
+              <span className="text-xs text-muted-foreground">Rabindra Store</span>
             </div>
           )}
         </div>

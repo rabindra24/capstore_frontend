@@ -1,8 +1,8 @@
 import { Search, Bell, User, Menu, LayoutDashboard, Package, Users, ShoppingCart, Calendar, MessageSquare, BarChart3, Settings, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import { NavLink } from "react-router-dom";
+import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
+import { Navigate, NavLink, useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +12,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
+import { useEffect, useRef, useState } from "react";
+import HoverSuggestion from "../helpers/HoverSuggestion";
 
 const navigationItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
@@ -25,23 +27,39 @@ const navigationItems = [
 ];
 
 export function AppHeader() {
+  const [user, setUser] = useState({ name: 'Rabindra', role: 'Admin' });
+  const navigate = useNavigate();
+  const search = useRef(null);
+  const { state } = useSidebar();
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        search.current?.focus();
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown);
+  }, [])
   return (
     <header className="flex h-16 items-center justify-between border-b border-border bg-card px-6 shadow-card">
       {/* Left side - Sidebar trigger and search */}
       <div className="flex items-center gap-4">
-        <SidebarTrigger className="hover:bg-sidebar-accent" />
-        
+        <HoverSuggestion  content={`${state === 'collapsed' ? 'Expand' : 'Collapse'}`}>
+          <SidebarTrigger className="hover:bg-sidebar-accent" />
+        </HoverSuggestion>
+
         <div className="relative max-w-md">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
           <Input
-            placeholder="Search..."
+            ref={search}
+            placeholder="Search (Ctrl + K)"
             className="pl-10 bg-sidebar-background border-sidebar-border focus:ring-primary"
           />
         </div>
       </div>
 
       {/* Center - Main Navigation */}
-      <nav className="hidden lg:flex items-center gap-1 flex-1 justify-center">
+      {/* <nav className="hidden lg:flex items-center gap-1 flex-1 justify-center">
         {navigationItems.map((item) => (
           <NavLink
             key={item.title}
@@ -59,20 +77,20 @@ export function AppHeader() {
             <span>{item.title}</span>
           </NavLink>
         ))}
-      </nav>
+      </nav> */}
 
       {/* Right side - Notifications and profile */}
       <div className="flex items-center gap-3">
         {/* Notifications */}
-        <Button variant="ghost" size="sm" className="relative">
+        {/* <Button variant="ghost" size="sm" className="relative">
           <Bell className="w-4 h-4" />
-          <Badge 
-            variant="destructive" 
+          <Badge
+            variant="destructive"
             className="absolute -top-1 -right-1 w-5 h-5 rounded-full p-0 flex items-center justify-center text-xs"
           >
             3
           </Badge>
-        </Button>
+        </Button> */}
 
         {/* Profile dropdown */}
         <DropdownMenu>
@@ -82,19 +100,17 @@ export function AppHeader() {
                 <User className="w-4 h-4 text-primary-foreground" />
               </div>
               <div className="hidden md:flex flex-col items-start">
-                <span className="text-sm font-medium">John Doe</span>
-                <span className="text-xs text-muted-foreground">Admin</span>
+                <span className="text-sm font-medium">{user.name}</span>
+                <span className="text-xs text-muted-foreground">{user.role}</span>
               </div>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>Support</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate('/settings')}>Settings</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive">
+            <DropdownMenuItem className="text-destructive" onClick={() => navigate('/')}>
               Sign out
             </DropdownMenuItem>
           </DropdownMenuContent>

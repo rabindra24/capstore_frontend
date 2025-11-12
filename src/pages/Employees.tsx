@@ -49,103 +49,104 @@ import {
 import { useToast } from "@/hooks/use-toast";
 
 const employeeData = [
-  {
-    id: "EMP001",
-    name: "Sarah Johnson",
-    email: "sarah.j@company.com",
-    role: "Manager",
-    department: "Sales",
-    performance: 95,
-    tasksCompleted: 48,
-    totalTasks: 50,
-    joinDate: "2023-03-15",
-    status: "Active",
-    avatar: "",
-    phone: "+1 (555) 123-4567",
-  },
-  {
-    id: "EMP002",
-    name: "Michael Chen",
-    email: "michael.c@company.com",
-    role: "Developer",
-    department: "Engineering",
-    performance: 88,
-    tasksCompleted: 42,
-    totalTasks: 45,
-    joinDate: "2023-06-20",
-    status: "Active",
-    avatar: "",
-    phone: "+1 (555) 234-5678",
-  },
+ 
   {
     id: "EMP003",
-    name: "Emily Rodriguez",
-    email: "emily.r@company.com",
-    role: "Designer",
-    department: "Design",
-    performance: 92,
+    name: "Sahana M",
+    email: "sahanam@gmail.com",
+    role: "AI Architect",
+    department: "AI",
+    performance: 95,
     tasksCompleted: 38,
     totalTasks: 40,
-    joinDate: "2023-01-10",
+    joinDate: "2025-01-10",
     status: "Active",
     avatar: "",
-    phone: "+1 (555) 345-6789",
+    phone: "+91636385968",
+  },
+   {
+    id: "EMP001",
+    name: "Yash Pandey",
+    email: "pandey@gmail.com",
+    role: "Game Developer",
+    department: "Game",
+    performance: 68,
+    tasksCompleted: 34,
+    totalTasks: 50,
+    joinDate: "2025-03-15",
+    status: "Active",
+    avatar: "",
+    phone: "+918596369596",
   },
   {
     id: "EMP004",
-    name: "David Wilson",
-    email: "david.w@company.com",
+    name: "Manas Srivastava",
+    email: "manas@gmail.com",
     role: "Analyst",
     department: "Marketing",
-    performance: 76,
-    tasksCompleted: 28,
-    totalTasks: 35,
-    joinDate: "2023-09-05",
+    performance: 66,
+    tasksCompleted: 33,
+    totalTasks: 55,
+    joinDate: "2025-09-05",
     status: "On Leave",
     avatar: "",
-    phone: "+1 (555) 456-7890",
+    phone: "+91 9856321474",
   },
   {
     id: "EMP005",
-    name: "Lisa Thompson",
-    email: "lisa.t@company.com",
+    name: "MalikaArjun",
+    email: "MalikaArjun@gmail.com",
     role: "Coordinator",
     department: "Operations",
     performance: 85,
-    tasksCompleted: 45,
+    tasksCompleted: 37.5,
     totalTasks: 50,
-    joinDate: "2023-04-12",
+    joinDate: "2025-04-12",
     status: "Active",
     avatar: "",
-    phone: "+1 (555) 567-8901",
+    phone: "+91 9859624885",
   },
+  {
+    id: "EMP002",
+    name: "Rabindra Nath mahato",
+    email: "mahato.rabindra.rm@gmail.com",
+    role: "Devoper",
+    department: "Engineering",
+    performance: 74,
+    tasksCompleted: 33.5,
+    totalTasks: 45,
+    joinDate: "2025-06-20",
+    status: "Active",
+    avatar: "",
+    phone: "+91 7691961139",
+  }
 ];
 
 const employeeStats = [
   {
     title: "Total Employees",
-    value: "247",
-    change: "+12",
+    value: "5",
+    change: "+1",
     trend: "up",
     icon: Users,
   },
   {
     title: "Average Performance",
-    value: "87%",
+    value: "75%",
     change: "+3%",
     trend: "up",
     icon: TrendingUp,
   },
   {
     title: "Active Projects",
-    value: "34",
+    value: "4",
     change: "+8",
     trend: "up",
     icon: Target,
   },
   {
     title: "On Leave",
-    value: "12",
+    value: "1",
     change: "-2",
     trend: "down",
     icon: Calendar,
@@ -183,7 +184,7 @@ export default function Employees() {
 
   const filteredEmployees = employeeData.filter(employee => {
     const matchesSearch = employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         employee.email.toLowerCase().includes(searchTerm.toLowerCase());
+      employee.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesDepartment = selectedDepartment === "all" || employee.department === selectedDepartment;
     return matchesSearch && matchesDepartment;
   });
@@ -394,41 +395,6 @@ export default function Employees() {
           </Card>
         ))}
       </div>
-
-      {/* Performance Chart */}
-      <Card className="shadow-card">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Award className="w-5 h-5 text-warning" />
-            Team Performance Overview
-          </CardTitle>
-          <CardDescription>Average performance metrics across departments</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {["Sales", "Engineering", "Design", "Marketing", "Operations"].map((dept, index) => {
-              const performance = [95, 88, 92, 81, 85][index];
-              return (
-                <div key={dept} className="flex items-center justify-between p-4 bg-secondary/30 rounded-lg">
-                  <div className="flex-1">
-                    <h4 className="font-semibold">{dept}</h4>
-                    <p className="text-sm text-muted-foreground">Department Average</p>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <div className="w-32">
-                      <Progress value={performance} className="h-2" />
-                    </div>
-                    <span className={`font-bold ${getPerformanceColor(performance)}`}>
-                      {performance}%
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Employee List */}
       <Card className="shadow-card">
         <CardHeader>
@@ -456,7 +422,7 @@ export default function Employees() {
                   <SelectItem value="all">All Departments</SelectItem>
                   <SelectItem value="Sales">Sales</SelectItem>
                   <SelectItem value="Engineering">Engineering</SelectItem>
-                  <SelectItem value="Design">Design</SelectItem>
+                  <SelectItem value="Design">AI</SelectItem>
                   <SelectItem value="Marketing">Marketing</SelectItem>
                   <SelectItem value="Operations">Operations</SelectItem>
                 </SelectContent>
@@ -516,8 +482,8 @@ export default function Employees() {
                             {Math.round((employee.tasksCompleted / employee.totalTasks) * 100)}%
                           </span>
                         </div>
-                        <Progress 
-                          value={(employee.tasksCompleted / employee.totalTasks) * 100} 
+                        <Progress
+                          value={(employee.tasksCompleted / employee.totalTasks) * 100}
                           className="h-1"
                         />
                       </div>
@@ -541,6 +507,42 @@ export default function Employees() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Performance Chart */}
+      <Card className="shadow-card">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Award className="w-5 h-5 text-warning" />
+            Team Performance Overview
+          </CardTitle>
+          <CardDescription>Average performance metrics across departments</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {["Sales", "Engineering", "Design", "Marketing", "Operations"].map((dept, index) => {
+              const performance = [95, 88, 92, 81, 85][index];
+              return (
+                <div key={dept} className="flex items-center justify-between p-4 bg-secondary/30 rounded-lg">
+                  <div className="flex-1">
+                    <h4 className="font-semibold">{dept}</h4>
+                    <p className="text-sm text-muted-foreground">Department Average</p>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="w-32">
+                      <Progress value={performance} className="h-2" />
+                    </div>
+                    <span className={`font-bold ${getPerformanceColor(performance)}`}>
+                      {performance}%
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
+
+
     </div>
   );
 }

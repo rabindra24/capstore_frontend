@@ -46,7 +46,7 @@ const meetingData = [
     id: "MTG001",
     title: "Weekly Team Standup",
     type: "Team Meeting",
-    date: "2024-01-18",
+    date: "2025-01-18",
     time: "09:00",
     duration: 30,
     location: "Conference Room A",
@@ -59,7 +59,7 @@ const meetingData = [
     id: "MTG002",
     title: "Client Presentation",
     type: "Client Meeting",
-    date: "2024-01-18",
+    date: "2025-01-18",
     time: "14:00",
     duration: 60,
     location: "Online",
@@ -72,7 +72,7 @@ const meetingData = [
     id: "MTG003",
     title: "Project Review",
     type: "Review",
-    date: "2024-01-19",
+    date: "2025-01-19",
     time: "10:30",
     duration: 45,
     location: "Conference Room B",
@@ -81,32 +81,7 @@ const meetingData = [
     agenda: "Design review, technical discussion, timeline update",
     meetingLink: "",
   },
-  {
-    id: "MTG004",
-    title: "Budget Planning",
-    type: "Planning",
-    date: "2024-01-19",
-    time: "15:00",
-    duration: 90,
-    location: "Boardroom",
-    participants: ["Sarah Johnson", "David Wilson", "Lisa Thompson", "John Smith"],
-    status: "Scheduled",
-    agenda: "Q1 budget review, resource allocation, cost optimization",
-    meetingLink: "",
-  },
-  {
-    id: "MTG005",
-    title: "Training Session",
-    type: "Training",
-    date: "2024-01-20",
-    time: "11:00",
-    duration: 120,
-    location: "Training Room",
-    participants: ["All Team Members"],
-    status: "Scheduled",
-    agenda: "New software training, best practices, Q&A",
-    meetingLink: "https://teams.microsoft.com/l/meetup-join/xyz",
-  },
+
 ];
 
 const meetingStats = [
@@ -343,7 +318,7 @@ export default function Meetings() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {meetingData.filter(m => m.date === "2024-01-18").map((meeting) => (
+            {meetingData.filter(m => m.date === "2025-01-18").map((meeting) => (
               <div key={meeting.id} className="flex items-center justify-between p-4 bg-primary-light/30 border border-primary/20 rounded-lg">
                 <div className="flex items-center gap-4">
                   <div className="text-center min-w-[60px]">
@@ -501,7 +476,7 @@ export default function Meetings() {
           <CardDescription>Common meeting-related tasks</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2 hover-lift">
               <Calendar className="w-6 h-6 text-primary" />
               <div className="text-center">
@@ -526,13 +501,7 @@ export default function Meetings() {
               </div>
             </Button>
             
-            <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2 hover-lift">
-              <Phone className="w-6 h-6 text-destructive" />
-              <div className="text-center">
-                <div className="font-medium">Conference Call</div>
-                <div className="text-xs text-muted-foreground">Audio-only meeting</div>
-              </div>
-            </Button>
+           
           </div>
         </CardContent>
       </Card>

@@ -119,7 +119,7 @@ const inventoryStats = [
   },
   {
     title: "Total Value",
-    value: "$45,678",
+    value: "₹45,678",
     change: "+8%",
     trend: "up",
     icon: TrendingUp,
@@ -337,7 +337,7 @@ export default function Inventory() {
                         />
                       </div>
                     </TableCell>
-                    <TableCell>${item.price}</TableCell>
+                    <TableCell>₹{item.price}</TableCell>
                     <TableCell>{getStatusBadge(item.status, item.stock, item.minStock)}</TableCell>
                     <TableCell>{item.supplier}</TableCell>
                     <TableCell>

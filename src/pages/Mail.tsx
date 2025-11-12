@@ -9,6 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import EmailContent from "@/components/Email/EmailContent";
 
 const folders = [
   { name: "Inbox", icon: Inbox, count: 12, active: true },
@@ -22,60 +23,215 @@ const folders = [
 const emails = [
   {
     id: 1,
-    sender: "Sarah Johnson",
-    email: "sarah.j@company.com",
+    sender: "Arjun Mehta",
+    email: "arjun.mehta@company.in",
     subject: "Q4 Budget Review Meeting",
-    preview: "Hi team, I'd like to schedule a meeting to review the Q4 budget allocations...",
+    preview:
+      "Hi team, let's finalize the Q4 budget allocations and review expenses from the last quarter...",
     time: "10:30 AM",
     unread: true,
     starred: true,
     hasAttachment: true,
+    content: `
+Hi Team,
+
+Let's finalize the **Q4 budget allocations** and review the spending trends from the last quarter.
+
+**Agenda:**
+1. Review marketing and development spends.
+2. Discuss savings targets.
+3. Plan Q1 forecast.
+
+📅 **Meeting Date:** 14th January, 2025  
+🕒 **Time:** 11:00 AM  
+📍 **Location:** Conference Room B / Google Meet
+
+Regards,  
+**Arjun Mehta**  
+Finance Head  
+[company.in](https://company.in)
+`,
+    contentHtml: `
+      <div style="font-family:Arial, sans-serif; line-height:1.6;">
+        <h3 style="color:#2b2b2b;">Q4 Budget Review Meeting</h3>
+        <p>Hi Team,</p>
+        <p>Let's finalize the <b>Q4 budget allocations</b> and review spending trends from the last quarter.</p>
+        <h4>Agenda:</h4>
+        <ul>
+          <li>Review marketing and development spends</li>
+          <li>Discuss savings targets</li>
+          <li>Plan Q1 forecast</li>
+        </ul>
+        <p>
+          📅 <b>Meeting Date:</b> 14th January, 2025<br>
+          🕒 <b>Time:</b> 11:00 AM<br>
+          📍 <b>Location:</b> Conference Room B / Google Meet
+        </p>
+        <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=1200&q=80" alt="Budget Meeting" style="max-width:100%; border-radius:8px; margin-top:10px;" />
+        <p>Regards,<br><b>Arjun Mehta</b><br>Finance Head<br>
+        <a href="https://company.in" style="color:#0066cc;">company.in</a></p>
+      </div>
+    `,
   },
   {
     id: 2,
-    sender: "Michael Chen",
-    email: "m.chen@company.com",
-    subject: "Project Status Update",
-    preview: "The development team has completed the initial phase of the new feature...",
+    sender: "Priya Sharma",
+    email: "priya.sharma@company.in",
+    subject: "Project Status Update - App Redesign",
+    preview:
+      "The dev team has wrapped up the UI improvements. QA testing starts tomorrow...",
     time: "9:15 AM",
     unread: true,
     starred: false,
     hasAttachment: false,
+    content: `
+# Project Status Update - App Redesign
+
+![App Redesign](https://images.unsplash.com/photo-1603791440384-56cd371ee9a7?auto=format&fit=crop&w=1200&q=80)
+
+The dev team has wrapped up the **UI improvements**. QA testing starts tomorrow.
+
+**Next Steps:**
+1. Conduct full regression testing.
+2. Validate new design components in multiple browsers.
+3. Prepare release notes for marketing.
+
+Thanks,  
+**Priya Sharma**  
+Product Manager  
+[company.in](https://company.in)
+    `,
   },
   {
     id: 3,
-    sender: "Emily Davis",
-    email: "emily.d@company.com",
-    subject: "Client Feedback - Product Demo",
-    preview: "Just got off a call with the client. They loved the demo and have some great feedback...",
+    sender: "Ravi Iyer",
+    email: "ravi.iyer@company.in",
+    subject: "Client Feedback - Product Demo (Tata Motors)",
+    preview:
+      "Had a productive call with the client. They appreciated the demo and suggested minor UI tweaks...",
     time: "Yesterday",
     unread: false,
     starred: true,
     hasAttachment: true,
+    content: `
+Hi All,
+
+We had a productive discussion with **Tata Motors** regarding the product demo.
+
+**Feedback Highlights:**
+- Positive response to the analytics dashboard.  
+- Suggested adding more visuals to the insights page.  
+- Requested a minor color palette adjustment.
+
+Let's target completing these updates by **Friday**.
+
+Regards,  
+**Ravi Iyer**  
+Client Success Manager
+`,
+    contentHtml: `
+      <div style="font-family:Arial, sans-serif; line-height:1.6;">
+        <h3 style="color:#2b2b2b;">Client Feedback - Product Demo (Tata Motors)</h3>
+        <p>Hi All,</p>
+        <p>We had a productive discussion with <b>Tata Motors</b> regarding the product demo.</p>
+        <h4>Feedback Highlights:</h4>
+        <ul>
+          <li>Positive response to the analytics dashboard</li>
+          <li>Suggested adding more visuals to the insights page</li>
+          <li>Requested a minor color palette adjustment</li>
+        </ul>
+        <p>Let’s target completing these updates by <b>Friday</b>.</p>
+        <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=80" alt="Client Feedback" style="max-width:100%; border-radius:8px; margin-top:10px;" />
+        <p>Regards,<br><b>Ravi Iyer</b><br>Client Success Manager</p>
+      </div>
+    `,
   },
   {
     id: 4,
-    sender: "James Wilson",
-    email: "j.wilson@company.com",
+    sender: "Neha Kapoor",
+    email: "neha.kapoor@company.in",
     subject: "Team Lunch Next Friday",
-    preview: "Hey everyone! Let's plan a team lunch next Friday. Any preferences on cuisine?",
+    preview:
+      "Hey everyone! Let's plan a team lunch next Friday. Any preferences — North Indian or South Indian?",
     time: "Yesterday",
     unread: false,
     starred: false,
     hasAttachment: false,
+    content: `
+Hey everyone 👋,
+
+Let's plan a **team lunch next Friday (17th Jan)** to celebrate our release milestone!
+
+Drop your cuisine preference in this quick poll:  
+👉 [Vote here](https://forms.company.in/team-lunch)
+
+Looking forward to catching up!
+
+Cheers,  
+**Neha**
+`,
+    contentHtml: `
+      <div style="font-family:Arial, sans-serif; line-height:1.6;">
+        <h3 style="color:#2b2b2b;">Team Lunch Next Friday 🍴</h3>
+        <p>Hey everyone 👋,</p>
+        <p>Let’s plan a <b>team lunch next Friday (17th Jan)</b> to celebrate our release milestone!</p>
+        <p>Drop your cuisine preference in this quick poll:<br>
+        👉 <a href="https://forms.company.in/team-lunch" style="color:#0066cc;">Vote here</a></p>
+        <img src="https://images.unsplash.com/photo-1529692236671-f1dc28f3d7d0?auto=format&fit=crop&w=1200&q=80" alt="Team Lunch" style="max-width:100%; border-radius:8px; margin-top:10px;" />
+        <p>Looking forward to catching up!</p>
+        <p>Cheers,<br><b>Neha Kapoor</b></p>
+      </div>
+    `,
   },
   {
     id: 5,
-    sender: "Linda Martinez",
-    email: "linda.m@company.com",
-    subject: "New Employee Onboarding",
-    preview: "We have three new team members joining us next week. Here's the onboarding schedule...",
+    sender: "Vikram Reddy",
+    email: "vikram.reddy@company.in",
+    subject: "New Employee Onboarding Schedule",
+    preview:
+      "We have three new hires joining the tech team next week. Please review the updated onboarding plan...",
     time: "2 days ago",
     unread: false,
     starred: false,
     hasAttachment: true,
+    content: `
+Dear Team,
+
+We’re welcoming **three new members** to the Tech Department next week.  
+Please find attached the onboarding schedule and induction plan.
+
+**New Joinees:**
+1. Ananya Verma – Frontend Developer  
+2. Rohit Patel – Backend Developer  
+3. Sneha Nair – QA Analyst  
+
+Ensure your teams are ready for introductions on **Monday, 9:30 AM**.
+
+Best,  
+**Vikram Reddy**  
+HR Manager
+`,
+    contentHtml: `
+      <div style="font-family:Arial, sans-serif; line-height:1.6;">
+        <h3 style="color:#2b2b2b;">Welcome Our New Team Members 🎉</h3>
+        <p>We’re excited to have <b>three new hires</b> joining our Tech Department next week.</p>
+        <ul>
+          <li><b>Ananya Verma</b> – Frontend Developer</li>
+          <li><b>Rohit Patel</b> – Backend Developer</li>
+          <li><b>Sneha Nair</b> – QA Analyst</li>
+        </ul>
+        <p>
+          📅 <b>Onboarding:</b> Monday, 9:30 AM<br>
+          📍 <b>Location:</b> Bengaluru Office / Google Meet
+        </p>
+        <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=1200&q=80" alt="Welcome Banner" style="max-width:100%; border-radius:8px; margin-top:10px;" />
+        <p>Best,<br><b>Vikram Reddy</b><br>HR Manager</p>
+      </div>
+    `,
   },
 ];
+
+
 
 export default function Mail() {
   const [selectedEmail, setSelectedEmail] = useState(emails[0]);
@@ -100,11 +256,10 @@ export default function Mail() {
                 setSelectedFolder(folder.name);
                 setFoldersOpen(false);
               }}
-              className={`w-full flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors ${
-                selectedFolder === folder.name
-                  ? "bg-primary text-primary-foreground"
-                  : "hover:bg-muted text-muted-foreground hover:text-foreground"
-              }`}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors ${selectedFolder === folder.name
+                ? "bg-primary text-primary-foreground"
+                : "hover:bg-muted text-muted-foreground hover:text-foreground"
+                }`}
             >
               <div className="flex items-center gap-2">
                 <folder.icon className="w-4 h-4" />
@@ -138,11 +293,10 @@ export default function Mail() {
                 <button
                   key={folder.name}
                   onClick={() => setSelectedFolder(folder.name)}
-                  className={`w-full flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors ${
-                    selectedFolder === folder.name
-                      ? "bg-primary text-primary-foreground"
-                      : "hover:bg-muted text-muted-foreground hover:text-foreground"
-                  }`}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors ${selectedFolder === folder.name
+                    ? "bg-primary text-primary-foreground"
+                    : "hover:bg-muted text-muted-foreground hover:text-foreground"
+                    }`}
                 >
                   <div className="flex items-center gap-2">
                     <folder.icon className="w-4 h-4" />
@@ -205,9 +359,8 @@ export default function Mail() {
                   setSelectedEmail(email);
                   if (isMobile) setShowEmailList(false);
                 }}
-                className={`w-full p-4 text-left hover:bg-muted transition-colors ${
-                  selectedEmail.id === email.id ? "bg-muted" : ""
-                } ${email.unread ? "bg-muted/30" : ""}`}
+                className={`w-full p-4 text-left hover:bg-muted transition-colors ${selectedEmail.id === email.id ? "bg-muted" : ""
+                  } ${email.unread ? "bg-muted/30" : ""}`}
               >
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-2 flex-1 min-w-0">
@@ -291,16 +444,7 @@ export default function Mail() {
             <p className="text-foreground">
               {selectedEmail.preview}
             </p>
-            <p className="mt-4 text-foreground">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor 
-              incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
-              exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-            </p>
-            <p className="mt-4 text-foreground">
-              Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
-              fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
-              culpa qui officia deserunt mollit anim id est laborum.
-            </p>
+            <EmailContent email={selectedEmail} />
             <p className="mt-4 text-foreground">
               Best regards,<br />
               {selectedEmail.sender}

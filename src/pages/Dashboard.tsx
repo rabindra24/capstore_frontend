@@ -20,7 +20,7 @@ import {
 const stats = [
   {
     title: "Total Revenue",
-    value: "$45,231.89",
+    value: "₹45,231.89",
     change: "+20.1%",
     trend: "up",
     icon: DollarSign,
@@ -140,80 +140,6 @@ export default function Dashboard() {
           </Card>
         ))}
       </div>
-
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* AI Chat Panel */}
-        <Card className="lg:col-span-2 shadow-card">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <MessageSquare className="w-5 h-5 text-primary" />
-              AI Business Assistant
-            </CardTitle>
-            <CardDescription>
-              Ask questions about your business data and get insights
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="bg-primary-light rounded-lg p-4">
-                <p className="text-sm">
-                  <strong>AI:</strong> Based on your recent data, I notice a 20% increase in orders this month. 
-                  Would you like me to analyze which products are driving this growth?
-                </p>
-              </div>
-              <div className="bg-secondary rounded-lg p-4 ml-8">
-                <p className="text-sm">
-                  <strong>You:</strong> Yes, please show me the top performing products this month.
-                </p>
-              </div>
-              <div className="bg-primary-light rounded-lg p-4">
-                <p className="text-sm">
-                  <strong>AI:</strong> Here are your top 3 performing products: Product X (156 orders), 
-                  Product Y (142 orders), and Product Z (138 orders). Product X shows 45% growth compared to last month.
-                </p>
-              </div>
-              <div className="flex gap-2 pt-2">
-                <Button size="sm" variant="outline" className="text-xs">
-                  Show detailed report
-                </Button>
-                <Button size="sm" variant="outline" className="text-xs">
-                  Analyze trends
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Low Stock Alerts */}
-        <Card className="shadow-card">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <AlertTriangle className="w-5 h-5 text-warning" />
-              Stock Alerts
-            </CardTitle>
-            <CardDescription>Items that need your attention</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {lowStockItems.map((item, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">{item.name}</p>
-                    <p className="text-xs text-muted-foreground">{item.stock} units left</p>
-                  </div>
-                  <Badge variant={item.critical ? "destructive" : "secondary"}>
-                    {item.critical ? "Critical" : "Low"}
-                  </Badge>
-                </div>
-              ))}
-            </div>
-            <Button size="sm" className="w-full mt-4" variant="outline">
-              View All Inventory
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Recent Activity */}
         <Card className="shadow-card">
@@ -258,7 +184,7 @@ export default function Dashboard() {
               </div>
               <Progress value={75} className="h-2" />
             </div>
-            
+
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
                 <span>Customer Satisfaction</span>
@@ -266,7 +192,7 @@ export default function Dashboard() {
               </div>
               <Progress value={92} className="h-2" />
             </div>
-            
+
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
                 <span>Order Fulfillment</span>
@@ -274,7 +200,7 @@ export default function Dashboard() {
               </div>
               <Progress value={88} className="h-2" />
             </div>
-            
+
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
                 <span>Team Productivity</span>
@@ -285,49 +211,126 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
+      <div className="grid gap-6 lg:grid-cols-3">
+        {/* AI Chat Panel */}
+        {/* <Card className="lg:col-span-2 shadow-card">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <MessageSquare className="w-5 h-5 text-primary" />
+              AI Business Assistant
+            </CardTitle>
+            <CardDescription>
+              Ask questions about your business data and get insights
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="bg-primary-light rounded-lg p-4">
+                <p className="text-sm">
+                  <strong>AI:</strong> Based on your recent data, I notice a 20% increase in orders this month.
+                  Would you like me to analyze which products are driving this growth?
+                </p>
+              </div>
+              <div className="bg-secondary rounded-lg p-4 ml-8">
+                <p className="text-sm">
+                  <strong>You:</strong> Yes, please show me the top performing products this month.
+                </p>
+              </div>
+              <div className="bg-primary-light rounded-lg p-4">
+                <p className="text-sm">
+                  <strong>AI:</strong> Here are your top 3 performing products: Product X (156 orders),
+                  Product Y (142 orders), and Product Z (138 orders). Product X shows 45% growth compared to last month.
+                </p>
+              </div>
+              <div className="flex gap-2 pt-2">
+                <Button size="sm" variant="outline" className="text-xs">
+                  Show detailed report
+                </Button>
+                <Button size="sm" variant="outline" className="text-xs">
+                  Analyze trends
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card> */}
 
-      {/* Quick Actions */}
-      <Card className="shadow-card">
-        <CardHeader>
-          <CardTitle>Quick Actions</CardTitle>
-          <CardDescription>Common tasks to get things done faster</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2 hover-lift">
-              <Package className="w-6 h-6 text-primary" />
-              <div className="text-center">
-                <div className="font-medium">Add Product</div>
-                <div className="text-xs text-muted-foreground">Create new inventory item</div>
-              </div>
+
+        {/* Low Stock Alerts */}
+        <Card className="shadow-card">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-warning" />
+              Stock Alerts
+            </CardTitle>
+            <CardDescription>Items that need your attention</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {lowStockItems.map((item, index) => (
+                <div key={index} className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">{item.name}</p>
+                    <p className="text-xs text-muted-foreground">{item.stock} units left</p>
+                  </div>
+                  <Badge variant={item.critical ? "destructive" : "secondary"}>
+                    {item.critical ? "Critical" : "Low"}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+            <Button size="sm" className="w-full mt-4" variant="outline">
+              View All Inventory
             </Button>
-            
-            <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2 hover-lift">
-              <Users className="w-6 h-6 text-success" />
-              <div className="text-center">
-                <div className="font-medium">Hire Employee</div>
-                <div className="text-xs text-muted-foreground">Add team member</div>
-              </div>
-            </Button>
-            
-            <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2 hover-lift">
-              <ShoppingCart className="w-6 h-6 text-warning" />
-              <div className="text-center">
-                <div className="font-medium">Process Order</div>
-                <div className="text-xs text-muted-foreground">Handle new customer order</div>
-              </div>
-            </Button>
-            
-            <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2 hover-lift">
-              <Calendar className="w-6 h-6 text-destructive" />
-              <div className="text-center">
-                <div className="font-medium">Schedule Meeting</div>
-                <div className="text-xs text-muted-foreground">Plan team discussion</div>
-              </div>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+        {/* Quick Actions */}
+        <Card className="lg:col-span-2 shadow-card">
+          <CardHeader>
+            <CardTitle>Quick Actions</CardTitle>
+            <CardDescription>Common tasks to get things done faster</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-2 md:grid-cols-1 lg:grid-cols-2">
+              <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2 hover-lift">
+                <Package className="w-6 h-6 text-primary" />
+                <div className="text-center">
+                  <div className="font-medium">Add Product</div>
+                  <div className="text-xs text-muted-foreground">Create new inventory item</div>
+                </div>
+              </Button>
+
+              <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2 hover-lift">
+                <Users className="w-6 h-6 text-success" />
+                <div className="text-center">
+                  <div className="font-medium">Hire Employee</div>
+                  <div className="text-xs text-muted-foreground">Add team member</div>
+                </div>
+              </Button>
+
+              <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2 hover-lift">
+                <ShoppingCart className="w-6 h-6 text-warning" />
+                <div className="text-center">
+                  <div className="font-medium">Process Order</div>
+                  <div className="text-xs text-muted-foreground">Handle new customer order</div>
+                </div>
+              </Button>
+
+              <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2 hover-lift">
+                <Calendar className="w-6 h-6 text-destructive" />
+                <div className="text-center">
+                  <div className="font-medium">Schedule Meeting</div>
+                  <div className="text-xs text-muted-foreground">Plan team discussion</div>
+                </div>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+      </div>
+
+
+
+
     </div>
   );
 }

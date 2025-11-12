@@ -1,22 +1,22 @@
-# Welcome to your Lovable project
+# Welcome to your rabindraishere project
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/05fba9b0-c1f4-4424-85b3-9592f6911221
+**URL**: https://rabindraishere.dev/projects/05fba9b0-c1f4-4424-85b3-9592f6911221
 
 ## How can I edit this code?
 
 There are several ways of editing your application.
 
-**Use Lovable**
+**Use rabindraishere**
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/05fba9b0-c1f4-4424-85b3-9592f6911221) and start prompting.
+Simply visit the [rabindraishere Project](https://rabindraishere.dev/projects/05fba9b0-c1f4-4424-85b3-9592f6911221) and start prompting.
 
-Changes made via Lovable will be committed automatically to this repo.
+Changes made via rabindraishere will be committed automatically to this repo.
 
 **Use your preferred IDE**
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in rabindraishere.
 ![alt text](src/assets/hero-dashboard.jpg)
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
@@ -62,12 +62,12 @@ This project is built with:
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/05fba9b0-c1f4-4424-85b3-9592f6911221) and click on Share -> Publish.
+Simply open [rabindraishere](https://rabindraishere.dev/projects/05fba9b0-c1f4-4424-85b3-9592f6911221) and click on Share -> Publish.
 
-## Can I connect a custom domain to my Lovable project?
+## Can I connect a custom domain to my rabindraishere project?
 
 Yes, you can!
 
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Read more here: [Setting up a custom domain](https://docs.rabindraishere.dev/features/custom-domain#custom-domain)

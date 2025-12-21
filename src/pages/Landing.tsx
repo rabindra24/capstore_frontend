@@ -7,11 +7,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import {
   Brain,
-  Package,
-  Users,
-  BarChart3,
-  Calendar,
-  ShoppingCart,
   CheckCircle,
   ArrowRight,
   Star,
@@ -20,48 +15,9 @@ import {
   MapPin,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import heroImage from "@/assets/hero-dashboard.jpg";
+import heroImage from "@/assets/hero.png";
+import { benefits, features } from "@/constant/Landing";
 
-const features = [
-  {
-    icon: Brain,
-    title: "AI-Powered Insights",
-    description: "Get intelligent recommendations and automated analysis of your business data.",
-  },
-  {
-    icon: Package,
-    title: "Smart Inventory Management",
-    description: "Track stock levels, automate reorders, and prevent stockouts with AI predictions.",
-  },
-  {
-    icon: Users,
-    title: "Employee Management",
-    description: "Manage your team, track performance, and assign tasks efficiently.",
-  },
-  {
-    icon: BarChart3,
-    title: "Advanced Analytics",
-    description: "Real-time dashboards and reports to make data-driven decisions.",
-  },
-  {
-    icon: Calendar,
-    title: "Meeting Scheduler",
-    description: "Integrated calendar and meeting management with team collaboration.",
-  },
-  {
-    icon: ShoppingCart,
-    title: "Order Processing",
-    description: "Streamline order management from creation to fulfillment.",
-  },
-];
-
-const benefits = [
-  "Increase operational efficiency by 40%",
-  "Reduce manual tasks with AI automation",
-  "Real-time business insights and reporting",
-  "Scalable solution for growing businesses",
-  "24/7 customer support and training",
-];
 
 export default function Landing() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -70,18 +26,33 @@ export default function Landing() {
   const handleContactSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     // Simulate form submission
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     toast({
       title: "Message sent!",
       description: "We'll get back to you within 24 hours.",
     });
-    
+
     setIsSubmitting(false);
     (e.target as HTMLFormElement).reset();
   };
+
+  const navelements = [
+    {
+      href: '#features',
+      title: "Features"
+    },
+    {
+      href: '#benefits',
+      title: "Benefits",
+    },
+    {
+      href: '#contact',
+      title: "Contact"
+    }
+  ]
 
   return (
     <div className="min-h-screen bg-background">
@@ -93,19 +64,17 @@ export default function Landing() {
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                 <Brain className="w-5 h-5 text-primary-foreground" />
               </div>
-              <span className="font-bold text-xl">AI Business Assistant</span>
+              <span className="font-bold text-xl">VirtuWork</span>
             </div>
-            
+
             <div className="hidden md:flex items-center gap-6">
-              <a href="#features" className="text-muted-foreground hover:text-foreground transition-smooth">
-                Features
-              </a>
-              <a href="#benefits" className="text-muted-foreground hover:text-foreground transition-smooth">
-                Benefits
-              </a>
-              <a href="#contact" className="text-muted-foreground hover:text-foreground transition-smooth">
-                Contact
-              </a>
+              {
+                navelements.map((item) => (
+                  <a href={item.href} className="text-muted-foreground hover:text-foreground transition-smooth">
+                    {item.title}
+                  </a>
+                ))
+              }
             </div>
 
             <div className="flex items-center gap-3">
@@ -130,13 +99,13 @@ export default function Landing() {
                   🚀 AI-Powered Business Management
                 </Badge>
                 <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
-                  Transform Your Business with{" "}
+                  Transform Your Business with
                   <span className="gradient-hero bg-clip-text text-transparent">
                     AI Intelligence
                   </span>
                 </h1>
                 <p className="text-xl text-muted-foreground leading-relaxed">
-                  Streamline operations, boost productivity, and make smarter decisions with our comprehensive AI business management platform.
+                  Streamline operations, boost productivity, and make smarter decisions with our comprehensive AI Integrated business management platform.
                 </p>
               </div>
 
@@ -147,9 +116,6 @@ export default function Landing() {
                     <ArrowRight className="ml-2 w-4 h-4" />
                   </Link>
                 </Button>
-                <Button size="lg" variant="outline" asChild className="hover-lift">
-                  <Link to="/login">Watch Demo</Link>
-                </Button>
               </div>
 
               <div className="flex items-center gap-6 pt-6">
@@ -159,7 +125,7 @@ export default function Landing() {
                   ))}
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  <span className="font-semibold text-foreground">4.9/5</span> from 2,000+ businesses
+                  <span className="font-semibold text-foreground">4.9/5</span> from 5+ businesses
                 </div>
               </div>
             </div>
@@ -279,7 +245,7 @@ export default function Landing() {
                 Ready to Transform Your Business?
               </h2>
               <p className="text-xl text-muted-foreground">
-                Get in touch with our team to learn how AI Business Assistant can help you achieve your goals.
+                Get in touch with our team to learn how VirtuWork can help you achieve your goals.
               </p>
             </div>
 
@@ -296,16 +262,16 @@ export default function Landing() {
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <label className="text-sm font-medium">First Name</label>
-                        <Input placeholder="John" required />
+                        <Input placeholder="Rabindra" required />
                       </div>
                       <div className="space-y-2">
                         <label className="text-sm font-medium">Last Name</label>
-                        <Input placeholder="Doe" required />
+                        <Input placeholder="Mahato" required />
                       </div>
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Email</label>
-                      <Input type="email" placeholder="john@company.com" required />
+                      <Input type="email" placeholder="rabindra@owner.com" required />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Company</label>
@@ -313,14 +279,14 @@ export default function Landing() {
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Message</label>
-                      <Textarea 
+                      <Textarea
                         placeholder="Tell us about your business needs..."
                         rows={4}
                         required
                       />
                     </div>
-                    <Button 
-                      type="submit" 
+                    <Button
+                      type="submit"
                       className="w-full gradient-primary shadow-button hover-lift"
                       disabled={isSubmitting}
                     >
@@ -343,7 +309,7 @@ export default function Landing() {
                         <p className="text-muted-foreground mb-2">
                           Get support or ask questions
                         </p>
-                        <p className="text-primary">hello@aibusiness.com</p>
+                        <p className="text-primary">mahato.rabindra.rm@gmail.com</p>
                       </div>
                     </div>
                   </CardContent>
@@ -358,9 +324,9 @@ export default function Landing() {
                       <div>
                         <h3 className="font-semibold mb-1">Call Us</h3>
                         <p className="text-muted-foreground mb-2">
-                          Speak with our sales team
+                          Speak with our Team
                         </p>
-                        <p className="text-success">+1 (555) 123-4567</p>
+                        <p className="text-success">+91 7691961139</p>
                       </div>
                     </div>
                   </CardContent>
@@ -373,13 +339,12 @@ export default function Landing() {
                         <MapPin className="w-5 h-5 text-warning" />
                       </div>
                       <div>
-                        <h3 className="font-semibold mb-1">Visit Us</h3>
+                        <h3 className="font-semibold mb-1">Not Visit Us</h3>
                         <p className="text-muted-foreground mb-2">
                           Our headquarters
                         </p>
                         <p className="text-warning">
-                          123 Business Ave<br />
-                          San Francisco, CA 94105
+                          Gaja Nivas, 44 10th Cross Rd, Ittamadu Bhuvaneshwari Nagar Banasankari, Bengaluru, Karnataka 560085
                         </p>
                       </div>
                     </div>
@@ -400,7 +365,7 @@ export default function Landing() {
                 <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                   <Brain className="w-5 h-5 text-primary-foreground" />
                 </div>
-                <span className="font-bold">AI Business Assistant</span>
+                <span className="font-bold">Virtuwork</span>
               </div>
               <p className="text-muted-foreground">
                 Empowering businesses with AI-driven management solutions.
@@ -436,7 +401,7 @@ export default function Landing() {
           </div>
 
           <div className="border-t border-border mt-12 pt-8 text-center text-muted-foreground">
-            <p>&copy; 2024 AI Business Assistant. All rights reserved.</p>
+            <p>&copy; 2025 VirtuWork. All rights reserved.</p>
           </div>
         </div>
       </footer>

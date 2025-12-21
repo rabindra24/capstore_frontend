@@ -2,11 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* AI Business Assistant Design System
-Modern indigo/blue primary, slate secondary, emerald/red accents
-Clean typography, consistent spacing, professional shadows
-*/
-
 @layer base {
   :root {
     /* Base colors */

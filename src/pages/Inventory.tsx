@@ -331,8 +331,8 @@ export default function Inventory() {
                           <span>{item.stock} units</span>
                           <span className="text-muted-foreground">/{item.minStock} min</span>
                         </div>
-                        <Progress 
-                          value={(item.stock / (item.minStock * 2)) * 100} 
+                        <Progress
+                          value={(item.stock / (item.minStock * 2)) * 100}
                           className="h-1"
                         />
                       </div>

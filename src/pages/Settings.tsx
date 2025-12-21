@@ -47,37 +47,8 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { integrations } from "@/constant/Settings";
 
-const integrations = [
-  {
-    name: "Zoom",
-    description: "Video conferencing and meetings",
-    icon: Video,
-    connected: true,
-    lastSync: "2024-01-16",
-  },
-  {
-    name: "WhatsApp Business",
-    description: "Customer communication via WhatsApp",
-    icon: MessageSquare,
-    connected: false,
-    lastSync: null,
-  },
-  {
-    name: "Instagram Business",
-    description: "Social media management and analytics",
-    icon: Instagram,
-    connected: true,
-    lastSync: "2024-01-15",
-  },
-  {
-    name: "OpenAI",
-    description: "AI-powered insights and automation",
-    icon: Zap,
-    connected: false,
-    lastSync: null,
-  },
-];
 
 const ThemeSelector = () => {
   const { theme, setTheme } = useTheme();
@@ -90,15 +61,15 @@ const ThemeSelector = () => {
       preview: "bg-gradient-to-br from-background to-secondary"
     },
     {
-      name: "dark", 
+      name: "dark",
       label: "Dark",
       description: "Easy on the eyes",
       preview: "bg-gradient-to-br from-gray-900 to-gray-800"
     },
     {
       name: "system",
-      label: "Auto", 
-      description: "Matches system preference", 
+      label: "Auto",
+      description: "Matches system preference",
       preview: "bg-gradient-to-br from-background via-gray-800 to-background"
     }
   ];
@@ -111,11 +82,10 @@ const ThemeSelector = () => {
           <div
             key={themeOption.name}
             onClick={() => setTheme(themeOption.name as "light" | "dark" | "system")}
-            className={`p-4 rounded-lg cursor-pointer transition-smooth ${
-              theme === themeOption.name
+            className={`p-4 rounded-lg cursor-pointer transition-smooth ${theme === themeOption.name
                 ? "border-2 border-primary"
                 : "border border-border hover:border-primary"
-            }`}
+              }`}
           >
             <div className={`w-full h-20 ${themeOption.preview} rounded mb-3`}></div>
             <div className="font-medium">{themeOption.label}</div>
@@ -225,10 +195,11 @@ export default function Settings() {
                   </AvatarFallback>
                 </Avatar>
                 <div className="space-y-2">
-                  <Button variant="outline" size="sm" className="hover-lift">
+                  <Input type="file"/>
+                  {/* <Button variant="outline" size="sm" className="hover-lift">
                     <Camera className="w-4 h-4 mr-2" />
                     Change Photo
-                  </Button>
+                  </Button> */}
                   <p className="text-xs text-muted-foreground">
                     Recommended: Square image, at least 400x400px
                   </p>
@@ -238,28 +209,28 @@ export default function Settings() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="firstName">First Name</Label>
-                  <Input id="firstName" defaultValue="John" />
+                  <Input id="firstName" defaultValue="Rabindra" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="lastName">Last Name</Label>
-                  <Input id="lastName" defaultValue="Doe" />
+                  <Input id="lastName" defaultValue="Mahato" />
                 </div>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
-                <Input id="email" type="email" defaultValue="john.doe@company.com" />
+                <Input id="email" type="email" defaultValue="rabindra@owner.com" />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="phone">Phone Number</Label>
-                <Input id="phone" defaultValue="+1 (555) 123-4567" />
+                <Input id="phone" defaultValue="+91 9632587415" />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="bio">Bio</Label>
-                <Textarea 
-                  id="bio" 
+                <Textarea
+                  id="bio"
                   placeholder="Tell us about yourself..."
                   defaultValue="Experienced business manager with 10+ years in operations and team leadership."
                 />
@@ -349,7 +320,7 @@ export default function Settings() {
 
               <div className="space-y-2">
                 <Label htmlFor="address">Business Address</Label>
-                <Textarea 
+                <Textarea
                   id="address"
                   defaultValue="123 Business Street, Suite 100, New York, NY 10001"
                 />
@@ -357,7 +328,7 @@ export default function Settings() {
 
               <div className="space-y-2">
                 <Label htmlFor="description">Company Description</Label>
-                <Textarea 
+                <Textarea
                   id="description"
                   placeholder="Describe your business..."
                   defaultValue="Leading technology solutions provider specializing in AI-powered business automation and management tools."
@@ -662,7 +633,7 @@ export default function Settings() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Badge 
+                      <Badge
                         variant={integration.connected ? "default" : "outline"}
                         className={integration.connected ? "bg-success text-success-foreground" : ""}
                       >

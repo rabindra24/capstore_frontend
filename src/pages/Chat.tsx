@@ -38,7 +38,7 @@ const mockChats: Chat[] = [
   {
     id: '2',
     name: 'Manas',
-    lastMessage: ' save me from priyanshu bhai , Please!',
+    lastMessage: 'Save me from priyanshu bhai , Please!',
     timestamp: '1:45 PM',
     unread: 0,
     isOnline: false
@@ -54,7 +54,7 @@ const mockChats: Chat[] = [
   {
     id: '4',
     name: 'Maniratnam',
-    lastMessage: 'MRD to lana padga',
+    lastMessage: 'MRD to lana padaga',
     timestamp: '10:45 AM ',
     unread: 1,
     isOnline: true
@@ -183,7 +183,7 @@ export default function Chat() {
     <div className="flex h-[calc(100vh-8rem)] bg-background rounded-lg shadow-elegant overflow-hidden">
       {/* Chat List Sidebar - Desktop */}
       {!isMobile && (
-        <div className="flex-1 border-r border-border/50 bg-card/30 backdrop-blur-sm">
+        <div className="flex-1 max-w-[400px] border-r border-border/50 bg-card/30 backdrop-blur-sm">
           {/* Search Header */}
           <div className="p-4 border-b border-border/50">
             <div className="relative">
@@ -242,7 +242,7 @@ export default function Chat() {
 
       {/* Chat Area */}
       {selectedChat ? (
-        <div className="flex-1 flex flex-col bg-gradient-to-b from-background to-muted/20">
+        <div className="flex-1  flex flex-col bg-gradient-to-b from-background to-muted/20">
           {/* Chat Header */}
           <div className="flex items-center justify-between p-4 border-b border-border/50 bg-background/80 backdrop-blur-sm">
             <div className="flex items-center gap-3">

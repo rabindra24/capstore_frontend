@@ -1,0 +1,112 @@
+import {
+    Users,
+    TrendingUp,
+    Calendar,
+    Target
+} from "lucide-react";
+
+const employeeData = [
+    {
+        id: "EMP003",
+        name: "Sahana M",
+        email: "sahanam@gmail.com",
+        role: "AI Architect",
+        department: "AI",
+        performance: 95,
+        tasksCompleted: 38,
+        totalTasks: 40,
+        joinDate: "2003-03-25",
+        status: "Active",
+        avatar: "",
+        phone: "+91636385968",
+    },
+    {
+        id: "EMP001",
+        name: "Yash Pandey",
+        email: "pandey@gmail.com",
+        role: "Game Developer",
+        department: "Game",
+        performance: 68,
+        tasksCompleted: 34,
+        totalTasks: 50,
+        joinDate: "2002-01-11",
+        status: "Active",
+        avatar: "",
+        phone: "+918596369596",
+    },
+    {
+        id: "EMP004",
+        name: "Manas Srivastava",
+        email: "manas@gmail.com",
+        role: "Analyst",
+        department: "Marketing",
+        performance: 66,
+        tasksCompleted: 33,
+        totalTasks: 55,
+        joinDate: "2002-11-21",
+        status: "On Leave",
+        avatar: "",
+        phone: "+91 9856321474",
+    },
+    {
+        id: "EMP005",
+        name: "MalikaArjun",
+        email: "MalikaArjun@gmail.com",
+        role: "Coordinator",
+        department: "Operations",
+        performance: 85,
+        tasksCompleted: 37.5,
+        totalTasks: 50,
+        joinDate: "2003-06-12",
+        status: "Active",
+        avatar: "",
+        phone: "+91 9859624885",
+    },
+    {
+        id: "EMP002",
+        name: "Rabindra Nath mahato",
+        email: "mahato.rabindra.rm@gmail.com",
+        role: "Devoper",
+        department: "Engineering",
+        performance: 74,
+        tasksCompleted: 33.5,
+        totalTasks: 45,
+        joinDate: "2002-03-24",
+        status: "Active",
+        avatar: "",
+        phone: "+91 7691961139",
+    }
+];
+
+const employeeStats = [
+    {
+        title: "Total Employees",
+        value: "5",
+        change: "+1",
+        trend: "up",
+        icon: Users,
+    },
+    {
+        title: "Average Performance",
+        value: "75%",
+        change: "+3%",
+        trend: "up",
+        icon: TrendingUp,
+    },
+    {
+        title: "Active Projects",
+        value: "4",
+        change: "+8",
+        trend: "up",
+        icon: Target,
+    },
+    {
+        title: "On Leave",
+        value: "1",
+        change: "-2",
+        trend: "down",
+        icon: Calendar,
+    },
+];
+
+export { employeeData, employeeStats }

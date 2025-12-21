@@ -8,10 +8,8 @@ import { AppLayout } from "./components/layout/AppLayout";
 import { Landing, Login, Register, Dashboard, Inventory, Employees, Orders, Meetings, Mail, Chat, Analytics, Settings, NotFound, LogNotFound } from "./pages/Index"
 import ProtectedRoute from "./context/auth/ProtectedRoute";
 import { AuthProvider } from "./context/auth/AuthContext";
-import Content from "./components/Content";
 
 const queryClient = new QueryClient();
-
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -36,7 +34,7 @@ const App = () => (
                   <Route path="chat" element={<Chat />} />
                   <Route path="analytics" element={<Analytics />} />
                   <Route path="settings" element={<Settings />} />
-                  <Route path="*" element={<LogNotFound />} />
+                  {/* <Route path="/*" element={<LogNotFound />} /> */}
                 </Route>
               </Route>
               <Route path="*" element={<NotFound />} />
@@ -48,8 +46,6 @@ const App = () => (
   </QueryClientProvider>
 );
 
-// const App = () => (
-//   <Content />
-// )
+
 
 export default App;

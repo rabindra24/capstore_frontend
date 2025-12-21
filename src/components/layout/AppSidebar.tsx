@@ -1,17 +1,7 @@
-import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
-  LayoutDashboard,
-  Package,
-  Users,
-  ShoppingCart,
-  Calendar,
-  MessageSquare,
-  BarChart3,
-  Settings,
   Brain,
   LogOut,
-  Mail,
 } from "lucide-react";
 import {
   Sidebar,
@@ -27,57 +17,8 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-
-const navigationItems = [
-  {
-    title: "Dashboard",
-    url: "/dashboard",
-    icon: LayoutDashboard,
-  },
-  {
-    title: "Inventory",
-    url: "/inventory",
-    icon: Package,
-  },
-  {
-    title: "Employees",
-    url: "/employees",
-    icon: Users,
-  },
-  {
-    title: "Orders",
-    url: "/orders",
-    icon: ShoppingCart,
-  },
-  {
-    title: "Meetings",
-    url: "/meetings",
-    icon: Calendar,
-  },
-  {
-    title: "Mail",
-    url: "/mail",
-    icon: Mail,
-  },
-  {
-    title: "Messages",
-    url: "/chat",
-    icon: MessageSquare,
-  },
-  {
-    title: "Analytics",
-    url: "/analytics",
-    icon: BarChart3,
-  },
-];
-
-const settingsItems = [
-  {
-    title: "Settings",
-    url: "/settings",
-    icon: Settings,
-  },
-];
+import { navigationItems, settingsItems } from "@/constant/Sidebar";
+import HoverSuggestion from "../helpers/HoverSuggestion";
 
 export function AppSidebar() {
   const { state } = useSidebar();
@@ -112,18 +53,21 @@ export function AppSidebar() {
           <SidebarGroupLabel>Main Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navigationItems.map((item) => (
+              {navigationItems.map((item, idx) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink
-                      to={item.url}
-                      end
-                      className={getNavClass(isActive(item.url))}
-                    >
-                      <item.icon className="w-4 h-4" />
-                      {!isCollapsed && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
+                  <HoverSuggestion content={`${item.title} ctrl + ${idx + 1}`}>
+
+                    <SidebarMenuButton asChild>
+                      <NavLink
+                        to={item.url}
+                        end
+                        className={getNavClass(isActive(item.url))}
+                      >
+                        <item.icon className="w-4 h-4" />
+                        {!isCollapsed && <span>{item.title}</span>}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </HoverSuggestion>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>

@@ -1,8 +1,9 @@
-import { Search, Bell, User, Menu, LayoutDashboard, Package, Users, ShoppingCart, Calendar, MessageSquare, BarChart3, Settings, Mail } from "lucide-react";
+import { Search, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
-import { Navigate, NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { Kbd, KbdGroup } from "@/components/ui/kbd"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,40 +12,60 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge";
 import { useEffect, useRef, useState } from "react";
 import HoverSuggestion from "../helpers/HoverSuggestion";
-
-const navigationItems = [
-  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-  { title: "Inventory", url: "/inventory", icon: Package },
-  { title: "Employees", url: "/employees", icon: Users },
-  { title: "Orders", url: "/orders", icon: ShoppingCart },
-  { title: "Meetings", url: "/meetings", icon: Calendar },
-  { title: "Mail", url: "/mail", icon: Mail },
-  { title: "Messages", url: "/chat", icon: MessageSquare },
-  { title: "Analytics", url: "/analytics", icon: BarChart3 },
-];
-
+import { useHotkey } from "@/lib/useHotKey";
 export function AppHeader() {
   const [user, setUser] = useState({ name: 'Rabindra', role: 'Admin' });
   const navigate = useNavigate();
   const search = useRef(null);
-  const { state } = useSidebar();
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
-        e.preventDefault();
-        search.current?.focus();
-      }
-    }
-    window.addEventListener('keydown', handleKeyDown);
-  }, [])
+  const { state, toggleSidebar } = useSidebar();
+  useHotkey('ctrl+k', () => {
+    search.current?.focus();
+  })
+  useHotkey('ctrl+1', () => {
+    navigate('/dashboard')
+  })
+  useHotkey('ctrl+2', () => {
+    navigate('/employees')
+  })
+  useHotkey('ctrl+3', () => {
+    navigate('/orders')
+  })
+  // useHotkey('ctrl+5',()=>{
+  //   navigate('/meetings')
+  // })
+  useHotkey('ctrl+4', () => {
+    navigate('/mail')
+  })
+  useHotkey('ctrl+5', () => {
+    navigate('/chat')
+  })
+  useHotkey('ctrl+6', () => {
+    navigate('/analytics')
+  })
+  useHotkey('ctrl+7', () => {
+    navigate('/settings')
+  })
+  useHotkey('shift+c', () => {
+    toggleSidebar()
+  })
+  // useEffect(() => {
+
+
+  //   const handleKeyDown = (e) => {
+  //     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+  //       e.preventDefault();
+  //       search.current?.focus();
+  //     }
+  //   }
+  //   window.addEventListener('keydown', handleKeyDown);
+  // }, [])
   return (
     <header className="flex h-16 items-center justify-between border-b border-border bg-card px-6 shadow-card">
       {/* Left side - Sidebar trigger and search */}
       <div className="flex items-center gap-4">
-        <HoverSuggestion  content={`${state === 'collapsed' ? 'Expand' : 'Collapse'}`}>
+        <HoverSuggestion content={`shift + c`}>
           <SidebarTrigger className="hover:bg-sidebar-accent" />
         </HoverSuggestion>
 
@@ -52,32 +73,11 @@ export function AppHeader() {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
           <Input
             ref={search}
-            placeholder="Search (Ctrl + K)"
+            placeholder="Search [ctrl+k]"
             className="pl-10 bg-sidebar-background border-sidebar-border focus:ring-primary"
           />
         </div>
       </div>
-
-      {/* Center - Main Navigation */}
-      {/* <nav className="hidden lg:flex items-center gap-1 flex-1 justify-center">
-        {navigationItems.map((item) => (
-          <NavLink
-            key={item.title}
-            to={item.url}
-            end
-            className={({ isActive }) =>
-              `flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-muted ${
-                isActive 
-                  ? 'bg-primary text-primary-foreground' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`
-            }
-          >
-            <item.icon className="w-4 h-4" />
-            <span>{item.title}</span>
-          </NavLink>
-        ))}
-      </nav> */}
 
       {/* Right side - Notifications and profile */}
       <div className="flex items-center gap-3">

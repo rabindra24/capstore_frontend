@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -13,8 +12,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Brain, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+import { useAuth } from "@/context/auth/AuthContext";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -25,40 +23,26 @@ export default function Login() {
 
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const res = await axios.post(`${API_URL}/api/auth/login`, {
-        email,
-        password,
-      });
-
-      const { accessToken, refreshToken, user } = res.data;
-
-      // ✅ Store auth data
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
-      localStorage.setItem("user", JSON.stringify(user));
+      await login(email, password);
 
       toast({
         title: "Welcome back!",
         description: "You have been successfully logged in.",
       });
 
-      // ✅ Role-based redirect (optional)
-      if (user.role === "ADMIN") {
-        navigate("/admin");
-      } else {
-        navigate("/dashboard");
-      }
-    } catch (err) {
+      // Navigate to dashboard
+      navigate("/dashboard");
+    } catch (err: any) {
       toast({
         title: "Login failed",
-        description:
-          err.response?.data?.message || "Invalid email or password",
+        description: err.message || "Invalid email or password",
         variant: "destructive",
       });
     } finally {

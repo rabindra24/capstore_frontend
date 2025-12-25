@@ -12,14 +12,30 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import HoverSuggestion from "../helpers/HoverSuggestion";
 import { useHotkey } from "@/lib/useHotKey";
+import { useAuth } from "@/context/auth/AuthContext";
+
 export function AppHeader() {
-  const [user, setUser] = useState({ name: 'Rabindra', role: 'Admin' });
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const search = useRef(null);
   const { state, toggleSidebar } = useSidebar();
+
+  // Format role for display
+  const formatRole = (role: string) => {
+    if (role === "super_admin") return "Super Admin";
+    if (role === "admin") return "Admin";
+    if (role === "manager") return "Manager";
+    return "Employee";
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login');
+  };
+
   useHotkey('ctrl+k', () => {
     search.current?.focus();
   })
@@ -32,9 +48,6 @@ export function AppHeader() {
   useHotkey('ctrl+3', () => {
     navigate('/orders')
   })
-  // useHotkey('ctrl+5',()=>{
-  //   navigate('/meetings')
-  // })
   useHotkey('ctrl+4', () => {
     navigate('/mail')
   })
@@ -50,17 +63,7 @@ export function AppHeader() {
   useHotkey('shift+c', () => {
     toggleSidebar()
   })
-  // useEffect(() => {
 
-
-  //   const handleKeyDown = (e) => {
-  //     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
-  //       e.preventDefault();
-  //       search.current?.focus();
-  //     }
-  //   }
-  //   window.addEventListener('keydown', handleKeyDown);
-  // }, [])
   return (
     <header className="flex h-16 items-center justify-between border-b border-border bg-card px-6 shadow-card">
       {/* Left side - Sidebar trigger and search */}
@@ -81,17 +84,6 @@ export function AppHeader() {
 
       {/* Right side - Notifications and profile */}
       <div className="flex items-center gap-3">
-        {/* Notifications */}
-        {/* <Button variant="ghost" size="sm" className="relative">
-          <Bell className="w-4 h-4" />
-          <Badge
-            variant="destructive"
-            className="absolute -top-1 -right-1 w-5 h-5 rounded-full p-0 flex items-center justify-center text-xs"
-          >
-            3
-          </Badge>
-        </Button> */}
-
         {/* Profile dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -100,8 +92,8 @@ export function AppHeader() {
                 <User className="w-4 h-4 text-primary-foreground" />
               </div>
               <div className="hidden md:flex flex-col items-start">
-                <span className="text-sm font-medium">{user.name}</span>
-                <span className="text-xs text-muted-foreground">{user.role}</span>
+                <span className="text-sm font-medium">{user?.name || "User"}</span>
+                <span className="text-xs text-muted-foreground">{formatRole(user?.role || "employee")}</span>
               </div>
             </Button>
           </DropdownMenuTrigger>
@@ -110,7 +102,7 @@ export function AppHeader() {
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => navigate('/settings')}>Settings</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive" onClick={() => navigate('/')}>
+            <DropdownMenuItem className="text-destructive" onClick={handleLogout}>
               Sign out
             </DropdownMenuItem>
           </DropdownMenuContent>

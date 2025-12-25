@@ -36,16 +36,22 @@ import {
   BarChart3,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import api from "@/lib/api";
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 const COLORS = ["#4f46e5", "#22c55e"];
 
-type StoreType = "global" | "woo" | "shopify";
+type StoreInfo = {
+  _id: string;
+  name: string;
+  platform: string;
+  storeUrl: string;
+};
 
 export default function Dashboard() {
   const { toast } = useToast();
 
-  const [store, setStore] = useState<StoreType>("global");
+  const [stores, setStores] = useState<StoreInfo[]>([]);
+  const [selectedStore, setSelectedStore] = useState<string>("global");
   const [period, setPeriod] = useState("30days");
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<any>(null);
@@ -67,28 +73,51 @@ export default function Dashboard() {
       .sort((a, b) => a.date.localeCompare(b.date));
   };
 
+  /* ---------------- FETCH STORES ---------------- */
+  useEffect(() => {
+    const fetchStores = async () => {
+      try {
+        const response = await api.get("/stores");
+        setStores(response.data.stores || []);
+      } catch (error: any) {
+        console.error("Failed to fetch stores:", error);
+      }
+    };
+
+    fetchStores();
+  }, []);
+
   /* ---------------- FETCH ---------------- */
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
         setLoading(true);
 
-        const endpoint =
-          store === "global"
-            ? "/api/analytics/global"
-            : store === "woo"
-            ? "/api/analytics/woo"
-            : "/api/analytics/shopify";
+        let endpoint: string;
+        let params: any = { period };
 
-        const res = await fetch(`${SERVER_URL}${endpoint}?period=${period}`);
-        if (!res.ok) throw new Error("Failed to fetch analytics");
+        if (selectedStore === "global") {
+          endpoint = "/analytics/global";
+        } else {
+          const store = stores.find(s => s._id === selectedStore);
+          if (!store) {
+            throw new Error("Store not found");
+          }
 
-        const json = await res.json();
-        setData(json.data);
-      } catch (err) {
+          endpoint = store.platform === "shopify"
+            ? "/analytics/shopify"
+            : "/analytics/woo";
+
+          params.storeId = selectedStore;
+        }
+
+        const response = await api.get(endpoint, { params });
+
+        setData(response.data.data);
+      } catch (err: any) {
         toast({
           title: "Dashboard Error",
-          description: "Unable to load analytics data",
+          description: err.response?.data?.message || "Unable to load analytics data",
           variant: "destructive",
         });
       } finally {
@@ -96,8 +125,10 @@ export default function Dashboard() {
       }
     };
 
-    fetchDashboard();
-  }, [store, period]);
+    if (selectedStore === "global" || stores.length > 0) {
+      fetchDashboard();
+    }
+  }, [selectedStore, period, stores]);
 
   /* ---------------- DERIVED DATA ---------------- */
 
@@ -105,7 +136,7 @@ export default function Dashboard() {
     if (!data) return [];
 
     // GLOBAL → merge Woo + Shopify
-    if (store === "global" && data.breakdown) {
+    if (selectedStore === "global" && data.breakdown) {
       const merged: Record<string, number> = {};
 
       ["woo", "shopify"].forEach((key) => {
@@ -122,15 +153,15 @@ export default function Dashboard() {
 
     // SINGLE STORE
     return normalizeByDay(data.byDay);
-  }, [data, store]);
+  }, [data, selectedStore]);
 
   const pieData = useMemo(() => {
-    if (store !== "global" || !data?.breakdown) return [];
+    if (selectedStore !== "global" || !data?.breakdown) return [];
     return [
       { name: "WooCommerce", value: data.breakdown.woo.totalRevenue },
       { name: "Shopify", value: data.breakdown.shopify.totalRevenue },
     ];
-  }, [data, store]);
+  }, [data, selectedStore]);
 
   const barData = useMemo(() => {
     if (!data?.sources) return [];
@@ -171,15 +202,35 @@ export default function Dashboard() {
         </div>
 
         <div className="flex gap-2">
-          <Select value={store} onValueChange={(v) => setStore(v as StoreType)}>
-            <SelectTrigger className="w-[160px]">
+          <Select value={selectedStore} onValueChange={setSelectedStore}>
+            <SelectTrigger className="w-[200px]">
               <Store className="w-4 h-4 mr-2" />
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="global">All Stores</SelectItem>
-              <SelectItem value="woo">WooCommerce</SelectItem>
-              <SelectItem value="shopify">Shopify</SelectItem>
+              <SelectItem value="global">
+                <div className="flex items-center gap-2">
+                  <Store className="w-4 h-4" />
+                  <span>All Stores</span>
+                </div>
+              </SelectItem>
+              {stores.length > 0 && (
+                <>
+                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
+                    Connected Stores
+                  </div>
+                  {stores.map((store) => (
+                    <SelectItem key={store._id} value={store._id}>
+                      <div className="flex items-center gap-2">
+                        <span>{store.name}</span>
+                        <span className="text-xs text-muted-foreground">
+                          ({store.platform})
+                        </span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </>
+              )}
             </SelectContent>
           </Select>
 
@@ -237,7 +288,7 @@ export default function Dashboard() {
         </Card>
 
         {/* PIE */}
-        {store === "global" && pieData.length > 0 && (
+        {selectedStore === "global" && pieData.length > 0 && (
           <Card>
             <CardHeader>
               <CardTitle>Revenue Share</CardTitle>
@@ -260,7 +311,7 @@ export default function Dashboard() {
       </div>
 
       {/* BAR */}
-      {store === "global" && barData.length > 0 && (
+      {selectedStore === "global" && barData.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle>Orders by Store</CardTitle>

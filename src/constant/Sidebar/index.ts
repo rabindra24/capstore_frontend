@@ -8,6 +8,7 @@ import {
     BarChart3,
     Settings,
     Mail,
+    CheckSquare,
 } from "lucide-react";
 
 const navigationItems = [
@@ -22,9 +23,20 @@ const navigationItems = [
         icon: Users,
     },
     {
+        title: "My Tasks",
+        url: "/my-tasks",
+        icon: CheckSquare,
+    },
+
+    {
         title: "Orders",
         url: "/orders",
         icon: ShoppingCart,
+    },
+    {
+        title: "Customers",
+        url: "/customers",
+        icon: Users,
     },
     {
         title: "Mail",

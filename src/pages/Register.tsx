@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -13,8 +12,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Brain, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+import { useAuth } from "@/context/auth/AuthContext";
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
@@ -29,6 +27,7 @@ export default function Register() {
 
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { register } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,30 +44,20 @@ export default function Register() {
     setIsLoading(true);
 
     try {
-      const res = await axios.post(`${API_URL}/api/auth/register`, {
-        name: `${firstName} ${lastName}`,
-        email,
-        password,
-      });
-
-      const { accessToken, refreshToken, user } = res.data;
-
-      // ✅ Store auth data
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
-      localStorage.setItem("user", JSON.stringify(user));
+      await register(`${firstName} ${lastName}`, email, password);
 
       toast({
         title: "Account created!",
         description: "Welcome to AI Business Assistant 🚀",
       });
 
-      navigate("/dashboard");
-    } catch (err) {
+      // Redirect based on role - admins go to store connection, employees to dashboard
+      // Since new registrations default to admin, redirect to settings to connect store
+      navigate("/settings?tab=stores&firstTime=true");
+    } catch (err: any) {
       toast({
         title: "Registration failed",
-        description:
-          err.response?.data?.message || "Something went wrong",
+        description: err.message || "Something went wrong",
         variant: "destructive",
       });
     } finally {

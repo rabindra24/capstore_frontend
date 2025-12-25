@@ -28,12 +28,9 @@ import {
   MapPin,
   Calendar,
   DollarSign,
-  Sparkles,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { orderAPI, customerAPI, storeAPI, geminiAI } from "@/lib/api";
-import AiOrderInsights from "@/components/ai/AiOrderInsights";
-
+import { orderAPI, customerAPI, storeAPI } from "@/lib/api";
 
 export default function Orders() {
   const [activeTab, setActiveTab] = useState("all");
@@ -50,11 +47,6 @@ export default function Orders() {
   const [dateFilter, setDateFilter] = useState("all");
   const [customerFilter, setCustomerFilter] = useState("all");
   const [showFilters, setShowFilters] = useState(false);
-
-  // AI Risk Analysis
-  const [showRiskColumn, setShowRiskColumn] = useState(false);
-  const [analyzingRisk, setAnalyzingRisk] = useState(false);
-  const [orderRisks, setOrderRisks] = useState<Record<string, any>>({});
 
   const { toast } = useToast();
 
@@ -206,118 +198,6 @@ export default function Orders() {
     }
   };
 
-  const handleAiRiskAnalysis = async () => {
-    try {
-      setAnalyzingRisk(true);
-      toast({
-        title: "AI Risk Analysis",
-        description: `Analyzing ${filteredOrders.length} orders...`,
-      });
-
-      const risks: Record<string, any> = {};
-
-
-      // Analyze orders in batches to avoid overwhelming the API
-      const batchSize = 5;
-      for (let i = 0; i < filteredOrders.length; i += batchSize) {
-        const batch = filteredOrders.slice(i, i + batchSize);
-
-        await Promise.all(
-          batch.map(async (order) => {
-            try {
-              const orderData = {
-                orderId: order.orderNumber,
-                customerName: order.customerName,
-                total: order.totalAmount,
-                status: order.status,
-                date: order.orderDate,
-                items: order.items?.length || 0,
-                shippingAddress: order.shippingAddress,
-              };
-
-              const response = await geminiAI.orderSummary(orderData);
-              const data = response.data?.summary || response.data || response;
-
-              // Determine risk level based on AI analysis
-              let riskLevel = "low";
-              let riskReason = "Order appears normal";
-
-              if (data.summary) {
-                const summaryLower = data.summary.toLowerCase();
-                if (summaryLower.includes("high risk") || summaryLower.includes("suspicious") || summaryLower.includes("fraud")) {
-                  riskLevel = "high";
-                  riskReason = "Potential fraud or delivery issues detected";
-                } else if (summaryLower.includes("medium risk") || summaryLower.includes("unusual") || summaryLower.includes("verify")) {
-                  riskLevel = "medium";
-                  riskReason = "Requires verification";
-                }
-              }
-
-              risks[order._id] = {
-                level: riskLevel,
-                reason: riskReason,
-                summary: data.summary || "Analysis complete",
-              };
-            } catch (err) {
-              console.error(`Failed to analyze order ${order.orderNumber}:`, err);
-              risks[order._id] = {
-                level: "unknown",
-                reason: "Analysis failed",
-              };
-            }
-          })
-        );
-      }
-
-      setOrderRisks(risks);
-      setShowRiskColumn(true);
-
-      toast({
-        title: "Analysis Complete!",
-        description: `${filteredOrders.length} orders analyzed`,
-      });
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to analyze orders",
-        variant: "destructive",
-      });
-    } finally {
-      setAnalyzingRisk(false);
-    }
-  };
-
-  const getRiskBadge = (orderId: string) => {
-    const risk = orderRisks[orderId];
-    if (!risk) return null;
-
-    switch (risk.level) {
-      case "low":
-        return (
-          <Badge className="bg-green-500 text-white" title={risk.reason}>
-            <CheckCircle className="w-3 h-3 mr-1" />
-            Low Risk
-          </Badge>
-        );
-      case "medium":
-        return (
-          <Badge className="bg-yellow-500 text-white" title={risk.reason}>
-            <Clock className="w-3 h-3 mr-1" />
-            Medium Risk
-          </Badge>
-        );
-      case "high":
-        return (
-          <Badge className="bg-red-500 text-white" title={risk.reason}>
-            <XCircle className="w-3 h-3 mr-1" />
-            High Risk
-          </Badge>
-        );
-      default:
-        return <Badge variant="outline">Unknown</Badge>;
-    }
-  };
-
   const filterOrders = () => {
     return orders.filter((order) => {
       // Search filter
@@ -368,14 +248,6 @@ export default function Orders() {
           <p className="text-muted-foreground">Manage orders from all your connected stores</p>
         </div>
         <div className="flex gap-2">
-          <Button
-            variant={showRiskColumn ? "default" : "outline"}
-            onClick={handleAiRiskAnalysis}
-            disabled={analyzingRisk || filteredOrders.length === 0}
-          >
-            <Sparkles className={`w-4 h-4 mr-2 ${analyzingRisk ? 'animate-spin' : ''}`} />
-            {analyzingRisk ? "Analyzing..." : showRiskColumn ? "AI Risk: ON" : "AI Risk Analysis"}
-          </Button>
           <Button variant="outline" onClick={handleSyncStores} disabled={loading}>
             <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
             Sync Stores
@@ -578,7 +450,6 @@ export default function Orders() {
                         <TableHead>Status</TableHead>
                         <TableHead>Date</TableHead>
                         <TableHead>Platform</TableHead>
-                        {showRiskColumn && <TableHead>AI Risk</TableHead>}
                         <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -597,9 +468,6 @@ export default function Orders() {
                           <TableCell>
                             <Badge variant="outline">{order.platform}</Badge>
                           </TableCell>
-                          {showRiskColumn && (
-                            <TableCell>{getRiskBadge(order._id)}</TableCell>
-                          )}
                           <TableCell className="text-right">
                             <Button
                               size="sm"
@@ -764,9 +632,6 @@ export default function Orders() {
                   </CardContent>
                 </Card>
               )}
-
-              {/* AI Order Insights */}
-              <AiOrderInsights order={selectedOrder} customer={selectedCustomer} />
             </div>
           )}
         </DialogContent>

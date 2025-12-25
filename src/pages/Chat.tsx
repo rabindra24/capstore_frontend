@@ -1,392 +1,371 @@
-import React, { useState } from 'react';
-import { Search, Phone, Video, MoreVertical, Paperclip, Mic, Send, Smile, Plus, Menu, ArrowLeft } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Badge } from '@/components/ui/badge';
-import { useIsMobile } from '@/hooks/use-mobile';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  MessageSquare,
+  Send,
+  Search,
+  RefreshCw,
+  User,
+  Mail,
+  Clock,
+} from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
-interface Chat {
-  id: string;
-  name: string;
-  avatar?: string;
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+
+type Message = {
+  _id: string;
+  message: string;
+  sender: "visitor" | "admin";
+  createdAt: string;
+  read: boolean;
+};
+
+type Session = {
+  _id: string;
+  visitorId: string;
+  visitorName: string;
+  visitorEmail: string;
   lastMessage: string;
-  timestamp: string;
-  unread: number;
-  isOnline: boolean;
-}
-
-interface Message {
-  id: string;
-  text: string;
-  timestamp: string;
-  isSent: boolean;
-  isRead: boolean;
-}
-
-const mockChats: Chat[] = [
-  {
-    id: '1',
-    name: 'Sahana',
-    lastMessage: 'Hey, how are you doing?',
-    timestamp: '2:30 PM',
-    unread: 2,
-    isOnline: true
-  },
-  {
-    id: '2',
-    name: 'Manas',
-    lastMessage: 'Save me from priyanshu bhai , Please!',
-    timestamp: '1:45 PM',
-    unread: 0,
-    isOnline: false
-  },
-  {
-    id: '3',
-    name: 'Yash PES',
-    lastMessage: 'Let Get Revolution',
-    timestamp: '12:15 PM',
-    unread: 5,
-    isOnline: true
-  },
-  {
-    id: '4',
-    name: 'Maniratnam',
-    lastMessage: 'MRD to lana padaga',
-    timestamp: '10:45 AM ',
-    unread: 1,
-    isOnline: true
-  }
-];
-
-const mockMessages: Message[] = [
-  {
-    id: '1',
-    text: 'Hey, how are you doing?',
-    timestamp: '2:25 PM',
-    isSent: false,
-    isRead: true
-  },
-  {
-    id: '2',
-    text: 'I\'m doing great! Just working on the new project.',
-    timestamp: '2:27 PM',
-    isSent: true,
-    isRead: true
-  },
-  {
-    id: '3',
-    text: 'That sounds exciting! How is it going so far?',
-    timestamp: '2:28 PM',
-    isSent: false,
-    isRead: true
-  },
-  {
-    id: '4',
-    text: 'Really well! The AI assistant features are coming along nicely. I think users will love the new chat interface.',
-    timestamp: '2:30 PM',
-    isSent: true,
-    isRead: false
-  }
-];
+  lastMessageTime: string;
+  unreadCount: number;
+  messageCount: number;
+};
 
 export default function Chat() {
-  const [selectedChat, setSelectedChat] = useState<Chat | null>(mockChats[0]);
-  const [newMessage, setNewMessage] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const isMobile = useIsMobile();
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [selectedSession, setSelectedSession] = useState<Session | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [replyText, setReplyText] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const { toast } = useToast();
 
-  const filteredChats = mockChats.filter(chat =>
-    chat.name.toLowerCase().includes(searchQuery.toLowerCase())
+  useEffect(() => {
+    fetchSessions();
+    // Poll for new messages every 10 seconds
+    const interval = setInterval(fetchSessions, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (selectedSession) {
+      fetchMessages(selectedSession._id);
+      markAsRead(selectedSession._id);
+    }
+  }, [selectedSession]);
+
+  const fetchSessions = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await fetch(`${SERVER_URL}/api/chat/sessions`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) throw new Error("Failed to fetch sessions");
+
+      const data = await response.json();
+      setSessions(data.sessions || []);
+    } catch (error: any) {
+      console.error("Fetch sessions error:", error);
+    }
+  };
+
+  const fetchMessages = async (sessionId: string) => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("accessToken");
+      const response = await fetch(`${SERVER_URL}/api/chat/messages/${sessionId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) throw new Error("Failed to fetch messages");
+
+      const data = await response.json();
+      setMessages(data.messages || []);
+    } catch (error: any) {
+      console.error("Fetch messages error:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load messages",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const markAsRead = async (sessionId: string) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      await fetch(`${SERVER_URL}/api/chat/messages/read`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ sessionId }),
+      });
+
+      // Update local state
+      setSessions(prev =>
+        prev.map(s => s._id === sessionId ? { ...s, unreadCount: 0 } : s)
+      );
+    } catch (error) {
+      console.error("Mark as read error:", error);
+    }
+  };
+
+  const sendReply = async () => {
+    if (!selectedSession || !replyText.trim()) return;
+
+    try {
+      setSending(true);
+      const token = localStorage.getItem("accessToken");
+      const response = await fetch(`${SERVER_URL}/api/chat/reply`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          sessionId: selectedSession._id,
+          message: replyText,
+        }),
+      });
+
+      if (!response.ok) throw new Error("Failed to send reply");
+
+      const data = await response.json();
+
+      // Add reply to messages
+      setMessages(prev => [...prev, data.reply]);
+      setReplyText("");
+
+      toast({ title: "Reply sent!" });
+
+      // Refresh sessions
+      fetchSessions();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to send reply",
+        variant: "destructive",
+      });
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const filteredSessions = sessions.filter(session =>
+    session.visitorName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    session.visitorEmail.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleSendMessage = () => {
-    if (newMessage.trim()) {
-      // In a real app, this would send the message to the backend
-      console.log('Sending message:', newMessage);
-      setNewMessage('');
-    }
-  };
+  const totalUnread = sessions.reduce((sum, s) => sum + s.unreadCount, 0);
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
-    }
-  };
-
-  const chatListSidebar = (
-    <div className="h-full border-r border-border/50 bg-card/30 backdrop-blur-sm flex flex-col">
-      {/* Search Header */}
-      <div className="p-4 border-b border-border/50">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search chats..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 bg-background/50 border-border/50 focus-visible:ring-primary/20"
-          />
+  return (
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Chat</h1>
+          <p className="text-muted-foreground">
+            View and respond to chat conversations from your website widget
+          </p>
+        </div>
+        <div className="flex gap-2 items-center">
+          {totalUnread > 0 && (
+            <Badge variant="destructive" className="text-sm">
+              {totalUnread} unread
+            </Badge>
+          )}
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={fetchSessions}
+          >
+            <RefreshCw className="w-4 h-4" />
+          </Button>
         </div>
       </div>
 
-      {/* Chat List */}
-      <ScrollArea className="flex-1">
-        <div className="p-2">
-          {filteredChats.map((chat) => (
-            <div
-              key={chat.id}
-              onClick={() => {
-                setSelectedChat(chat);
-                setSidebarOpen(false);
-              }}
-              className={`flex items-center gap-3 p-3 rounded-lg hover:bg-accent/50 cursor-pointer transition-all duration-200 mb-1 ${
-                selectedChat?.id === chat.id ? 'bg-accent shadow-sm' : ''
-              }`}
-            >
-              <div className="relative">
-                <Avatar className="h-12 w-12 ring-2 ring-background">
-                  <AvatarImage src={chat.avatar} />
-                  <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                    {chat.name.split(' ').map(n => n[0]).join('')}
-                  </AvatarFallback>
-                </Avatar>
-                {chat.isOnline && (
-                  <div className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 bg-green-500 rounded-full border-2 border-background"></div>
-                )}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex justify-between items-baseline mb-1">
-                  <h3 className="font-semibold truncate text-foreground">{chat.name}</h3>
-                  <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">{chat.timestamp}</span>
-                </div>
-                <div className="flex justify-between items-center gap-2">
-                  <p className="text-sm text-muted-foreground truncate flex-1">{chat.lastMessage}</p>
-                  {chat.unread > 0 && (
-                    <Badge className="bg-primary text-primary-foreground text-xs px-2 py-0.5 min-w-5 flex-shrink-0">
-                      {chat.unread}
-                    </Badge>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </ScrollArea>
-    </div>
-  );
-
-  return (
-    <div className="flex h-[calc(100vh-8rem)] bg-background rounded-lg shadow-elegant overflow-hidden">
-      {/* Chat List Sidebar - Desktop */}
-      {!isMobile && (
-        <div className="flex-1 max-w-[400px] border-r border-border/50 bg-card/30 backdrop-blur-sm">
-          {/* Search Header */}
-          <div className="p-4 border-b border-border/50">
+      {/* Chat Interface */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-250px)]">
+        {/* Sessions List */}
+        <Card className="lg:col-span-1">
+          <CardHeader>
+            <CardTitle className="text-lg">Conversations</CardTitle>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
-                placeholder="Search chats..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-background/50 border-border/50 focus-visible:ring-primary/20"
+                placeholder="Search conversations..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
               />
             </div>
-          </div>
-
-          {/* Chat List */}
-          <ScrollArea className="h-[calc(100%-5rem)]">
-            <div className="p-2">
-              {filteredChats.map((chat) => (
-                <div
-                  key={chat.id}
-                  onClick={() => setSelectedChat(chat)}
-                  className={`flex items-center gap-3 p-3 rounded-lg hover:bg-accent/50 cursor-pointer transition-all duration-200 mb-1 ${
-                    selectedChat?.id === chat.id ? 'bg-accent shadow-sm' : ''
-                  }`}
-                >
-                  <div className="relative">
-                    <Avatar className="h-12 w-12 ring-2 ring-background">
-                      <AvatarImage src={chat.avatar} />
-                      <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                        {chat.name.split(' ').map(n => n[0]).join('')}
-                      </AvatarFallback>
-                    </Avatar>
-                    {chat.isOnline && (
-                      <div className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 bg-green-500 rounded-full border-2 border-background"></div>
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex justify-between items-baseline mb-1">
-                      <h3 className="font-semibold truncate text-foreground">{chat.name}</h3>
-                      <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">{chat.timestamp}</span>
-                    </div>
-                    <div className="flex justify-between items-center gap-2">
-                      <p className="text-sm text-muted-foreground truncate flex-1">{chat.lastMessage}</p>
-                      {chat.unread > 0 && (
-                        <Badge className="bg-primary text-primary-foreground text-xs px-2 py-0.5 min-w-5 flex-shrink-0">
-                          {chat.unread}
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
+          </CardHeader>
+          <CardContent className="p-0">
+            <ScrollArea className="h-[calc(100vh-400px)]">
+              {filteredSessions.length === 0 ? (
+                <div className="p-6 text-center text-muted-foreground">
+                  <MessageSquare className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                  <p>No conversations yet</p>
+                  <p className="text-sm mt-1">
+                    Install the chat widget on your website to start receiving messages
+                  </p>
                 </div>
-              ))}
-            </div>
-          </ScrollArea>
-        </div>
-      )}
-
-      {/* Chat Area */}
-      {selectedChat ? (
-        <div className="flex-1  flex flex-col bg-gradient-to-b from-background to-muted/20">
-          {/* Chat Header */}
-          <div className="flex items-center justify-between p-4 border-b border-border/50 bg-background/80 backdrop-blur-sm">
-            <div className="flex items-center gap-3">
-              {isMobile && (
-                <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
-                  <SheetTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-9 w-9">
-                      <Menu className="h-5 w-5" />
-                    </Button>
-                  </SheetTrigger>
-                  <SheetContent side="left" className="w-80 p-0">
-                    {chatListSidebar}
-                  </SheetContent>
-                </Sheet>
-              )}
-              <div className="relative">
-                <Avatar className="h-11 w-11 ring-2 ring-primary/10">
-                  <AvatarImage src={selectedChat.avatar} />
-                  <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                    {selectedChat.name.split(' ').map(n => n[0]).join('')}
-                  </AvatarFallback>
-                </Avatar>
-                {selectedChat.isOnline && (
-                  <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-green-500 rounded-full border-2 border-background"></div>
-                )}
-              </div>
-              <div>
-                <h2 className="font-semibold text-foreground">{selectedChat.name}</h2>
-                <p className="text-xs text-muted-foreground flex items-center gap-1">
-                  {selectedChat.isOnline && <span className="h-1.5 w-1.5 bg-green-500 rounded-full"></span>}
-                  {selectedChat.isOnline ? 'Online' : 'Last seen recently'}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-1">
-              {!isMobile && (
-                <>
-                  <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full hover:bg-accent">
-                    <Phone className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full hover:bg-accent">
-                    <Video className="h-4 w-4" />
-                  </Button>
-                </>
-              )}
-              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full hover:bg-accent">
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-
-          {/* Messages */}
-          <ScrollArea className="flex-1 p-6">
-            <div className="space-y-4 max-w-4xl mx-auto">
-              {mockMessages.map((message, index) => (
-                <div
-                  key={message.id}
-                  className={`flex ${message.isSent ? 'justify-end' : 'justify-start'} animate-fade-in`}
-                  style={{ animationDelay: `${index * 0.05}s` }}
-                >
-                  <div
-                    className={`max-w-[70%] lg:max-w-[60%] px-4 py-3 rounded-2xl transition-all hover:shadow-sm ${
-                      message.isSent
-                        ? 'bg-primary text-primary-foreground rounded-br-sm shadow-md'
-                        : 'bg-card border border-border/50 text-card-foreground rounded-bl-sm'
-                    }`}
-                  >
-                    <p className="text-sm leading-relaxed">{message.text}</p>
-                    <div className={`flex items-center gap-1.5 mt-2 ${
-                      message.isSent ? 'justify-end' : 'justify-start'
-                    }`}>
-                      <span className={`text-xs ${message.isSent ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
-                        {message.timestamp}
-                      </span>
-                      {message.isSent && (
-                        <div className="flex">
-                          <div className={`h-3.5 w-3.5 ${message.isRead ? 'text-blue-300' : 'text-primary-foreground/50'}`}>
-                            <svg viewBox="0 0 16 15" className="w-full h-full fill-current">
-                              <path d="M10.91 3.316l-.478-.372a.365.365 0 0 0-.51.063L6.85 8.616 4.2 6.327a.367.367 0 0 0-.51-.063l-.478.372a.365.365 0 0 0-.063.51l3.378 3.646a.367.367 0 0 0 .51.063.365.365 0 0 0 .063-.51L10.973 3.89a.365.365 0 0 0-.063-.574z"/>
-                              {message.isRead && (
-                                <path d="M16.91 3.316l-.478-.372a.365.365 0 0 0-.51.063L12.85 8.616 10.2 6.327a.367.367 0 0 0-.51-.063l-.478.372a.365.365 0 0 0-.063.51l3.378 3.646a.367.367 0 0 0 .51.063.365.365 0 0 0 .063-.51L16.973 3.89a.365.365 0 0 0-.063-.574z"/>
-                              )}
-                            </svg>
+              ) : (
+                <div className="space-y-1 p-2">
+                  {filteredSessions.map((session) => (
+                    <div
+                      key={session._id}
+                      onClick={() => setSelectedSession(session)}
+                      className={cn(
+                        "p-4 rounded-lg cursor-pointer transition-colors",
+                        selectedSession?._id === session._id
+                          ? "bg-primary/10 border-2 border-primary"
+                          : "hover:bg-muted border-2 border-transparent"
+                      )}
+                    >
+                      <div className="flex items-start justify-between mb-1">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                            <User className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <div className="font-semibold text-sm">
+                              {session.visitorName}
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              {session.visitorEmail}
+                            </div>
                           </div>
                         </div>
-                      )}
+                        {session.unreadCount > 0 && (
+                          <Badge variant="destructive" className="text-xs">
+                            {session.unreadCount}
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-sm text-muted-foreground line-clamp-2 mt-2">
+                        {session.lastMessage}
+                      </p>
+                      <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
+                        <Clock className="w-3 h-3" />
+                        {new Date(session.lastMessageTime).toLocaleString()}
+                      </div>
                     </div>
+                  ))}
+                </div>
+              )}
+            </ScrollArea>
+          </CardContent>
+        </Card>
+
+        {/* Messages View */}
+        <Card className="lg:col-span-2">
+          {selectedSession ? (
+            <>
+              <CardHeader className="border-b">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                    <User className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg">{selectedSession.visitorName}</CardTitle>
+                    <CardDescription className="flex items-center gap-2">
+                      <Mail className="w-3 h-3" />
+                      {selectedSession.visitorEmail}
+                    </CardDescription>
                   </div>
                 </div>
-              ))}
-            </div>
-          </ScrollArea>
+              </CardHeader>
+              <CardContent className="p-0 flex flex-col h-[calc(100%-80px)]">
+                {/* Messages */}
+                <ScrollArea className="flex-1 p-4">
+                  {loading ? (
+                    <p className="text-center text-muted-foreground">Loading messages...</p>
+                  ) : messages.length === 0 ? (
+                    <p className="text-center text-muted-foreground">No messages yet</p>
+                  ) : (
+                    <div className="space-y-4">
+                      {messages.map((msg) => (
+                        <div
+                          key={msg._id}
+                          className={cn(
+                            "flex flex-col",
+                            msg.sender === "admin" ? "items-end" : "items-start"
+                          )}
+                        >
+                          <div
+                            className={cn(
+                              "max-w-[75%] rounded-lg p-3",
+                              msg.sender === "admin"
+                                ? "bg-primary text-primary-foreground"
+                                : "bg-muted"
+                            )}
+                          >
+                            <p className="text-sm whitespace-pre-wrap">{msg.message}</p>
+                          </div>
+                          <span className="text-xs text-muted-foreground mt-1">
+                            {new Date(msg.createdAt).toLocaleTimeString([], {
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </ScrollArea>
 
-          {/* Message Input */}
-          <div className="p-4 border-t border-border/50 bg-background/80 backdrop-blur-sm">
-            <div className="flex items-end gap-2 max-w-4xl mx-auto">
-              {!isMobile && (
-                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-accent flex-shrink-0">
-                  <Paperclip className="h-5 w-5" />
-                </Button>
-              )}
-              <div className="flex-1 relative">
-                <Input
-                  placeholder="Type a message..."
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  className="pr-12 h-12 rounded-full bg-muted/50 border-border/50 focus-visible:ring-primary/20 transition-all"
-                />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="absolute right-1 top-1/2 transform -translate-y-1/2 h-9 w-9 rounded-full hover:bg-accent"
-                >
-                  <Smile className="h-5 w-5" />
-                </Button>
+                {/* Reply Input */}
+                <div className="border-t p-4">
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Type your reply..."
+                      value={replyText}
+                      onChange={(e) => setReplyText(e.target.value)}
+                      onKeyPress={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey) {
+                          e.preventDefault();
+                          sendReply();
+                        }
+                      }}
+                    />
+                    <Button
+                      onClick={sendReply}
+                      disabled={sending || !replyText.trim()}
+                    >
+                      <Send className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </>
+          ) : (
+            <CardContent className="flex items-center justify-center h-full">
+              <div className="text-center text-muted-foreground">
+                <MessageSquare className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                <p className="text-lg font-medium">Select a conversation</p>
+                <p className="text-sm mt-1">Choose a conversation from the list to view messages</p>
               </div>
-              {newMessage.trim() ? (
-                <Button 
-                  onClick={handleSendMessage} 
-                  size="icon"
-                  className="h-10 w-10 rounded-full shadow-md hover:shadow-lg transition-all hover-scale"
-                >
-                  <Send className="h-5 w-5" />
-                </Button>
-              ) : !isMobile ? (
-                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-accent flex-shrink-0">
-                  <Mic className="h-5 w-5" />
-                </Button>
-              ) : null}
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="flex-1 flex items-center justify-center bg-gradient-to-b from-background to-muted/20">
-          <div className="text-center animate-fade-in">
-            <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
-              <Send className="h-10 w-10 text-primary" />
-            </div>
-            <h3 className="text-xl font-semibold mb-2 text-foreground">Select a chat</h3>
-            <p className="text-muted-foreground max-w-sm mx-auto">Choose a conversation from the sidebar to start messaging</p>
-          </div>
-        </div>
-      )}
+            </CardContent>
+          )}
+        </Card>
+      </div>
     </div>
   );
 }

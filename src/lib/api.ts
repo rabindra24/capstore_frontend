@@ -106,15 +106,13 @@ export const orderAPI = {
     getOrderById: (id: string) => api.get(`/orders/${id}`),
 
     updateOrderStatus: (id: string, status: string) =>
-        api.put(`/orders/${id}`, { status }),
+        api.put(`/orders/${id}/status`, { status }),
 
-    fulfillOrder: (id: string, fulfillmentData: any) =>
-        api.post(`/orders/${id}/fulfill`, fulfillmentData),
-
-    getOrderStats: (filters?: any) => api.get("/orders/stats", { params: filters }),
+    getRecentOrders: (limit?: number) =>
+        api.get("/orders/recent", { params: { limit } }),
 };
 
-// Product API
+// Product/Inventory API
 export const productAPI = {
     getAllProducts: (filters?: any) => api.get("/products", { params: filters }),
 
@@ -122,11 +120,6 @@ export const productAPI = {
 
     updateProduct: (id: string, updates: any) =>
         api.put(`/products/${id}`, updates),
-
-    syncProducts: () => api.post("/products/sync"),
-
-    getInventoryStatus: (filters?: any) =>
-        api.get("/products/inventory/status", { params: filters }),
 
     getLowStockProducts: () => api.get("/products/inventory/low-stock"),
 
@@ -179,24 +172,20 @@ export const settingsAPI = {
     updateNotificationPreferences: (preferences: any) =>
         api.put("/settings/notifications", preferences),
 
-    getApiKeys: () => api.get("/settings/api-keys"),
+    updateIntegrations: (integrations: any) =>
+        api.put("/settings/integrations", integrations),
 
-    updateApiKeys: (platform: string, credentials: any, storeId?: string) =>
-        api.put("/settings/api-keys", { platform, credentials, storeId }),
+    updateApiKeys: (apiKeys: any) =>
+        api.put("/settings/api-keys", apiKeys),
+
+    getAllApiKeys: () => api.get("/settings/api-keys"),
+
+    createApiKey: (apiKeyData: any) => api.post("/settings/api-keys", apiKeyData),
+
+    updateApiKey: (id: string, updates: any) =>
+        api.put(`/settings/api-keys/${id}`, updates),
 
     deleteApiKey: (id: string) => api.delete(`/settings/api-keys/${id}`),
-};
-
-// Task API (productivity)
-export const taskAPI = {
-    getAllTasks: () => api.get("/productivity/tasks"),
-
-    createTask: (taskData: any) => api.post("/productivity/tasks", taskData),
-
-    updateTask: (id: string, updates: any) =>
-        api.put(`/productivity/tasks/${id}`, updates),
-
-    deleteTask: (id: string) => api.delete(`/productivity/tasks/${id}`),
 };
 
 // Analytics API
@@ -215,8 +204,11 @@ export const employeeAPI = {
 
     deleteEmployee: (id: string) => api.delete(`/employees/${id}`),
 
-    assignTask: (employeeId: string, taskData: any) =>
-        api.post(`/employees/assign/${employeeId}`, taskData),
+    // Assign task to employee
+    assignTask: (employeeId: string, taskData: any) => {
+        console.log("📤 API: Assigning task to employee", employeeId, taskData);
+        return api.post(`/employees/assign/${employeeId}`, taskData);
+    },
 
     getEmployeeTasks: (employeeId: string) =>
         api.get(`/employees/${employeeId}/tasks`),

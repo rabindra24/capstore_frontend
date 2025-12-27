@@ -137,10 +137,6 @@ export default function Employees() {
 
     const { toast } = useToast();
 
-    const getAuthToken = () => {
-        return localStorage.getItem("accessToken");
-    };
-
     const fetchEmployees = async () => {
         try {
             setLoading(true);
@@ -187,36 +183,22 @@ export default function Employees() {
 
     const handleEditEmployee = async () => {
         try {
-            const token = getAuthToken();
-
-            const res = await fetch(`${SERVER_URL}/api/employees/${selectedEmployeeId}`, {
-                method: "PUT",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    name: newEmployee.name,
-                    email: newEmployee.email,
-                    position: newEmployee.position,
-                    department: newEmployee.department,
-                }),
+            await employeeAPI.updateEmployee(selectedEmployeeId, {
+                name: newEmployee.name,
+                email: newEmployee.email,
+                position: newEmployee.position,
+                department: newEmployee.department,
             });
-
-            if (!res.ok) {
-                const error = await res.json();
-                throw new Error(error.message || "Failed to update employee");
-            }
 
             toast({ title: "Employee updated successfully" });
             setIsEditOpen(false);
-            setNewEmployee({ name: "", email: "", password: "", position: "", department: "" });
+            setNewEmployee({ name: "", email: "", position: "", department: "" });
             setSelectedEmployeeId("");
             fetchEmployees();
         } catch (error: any) {
             toast({
                 title: "Error",
-                description: error.message || "Failed to update employee",
+                description: error.response?.data?.message || error.message || "Failed to update employee",
                 variant: "destructive",
             });
         }
@@ -226,26 +208,14 @@ export default function Employees() {
         if (!confirm("Are you sure you want to deactivate this employee?")) return;
 
         try {
-            const token = getAuthToken();
-
-            const res = await fetch(`${SERVER_URL}/api/employees/${employeeId}`, {
-                method: "DELETE",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-            });
-
-            if (!res.ok) {
-                throw new Error("Failed to delete employee");
-            }
+            await employeeAPI.deleteEmployee(employeeId);
 
             toast({ title: "Employee deactivated successfully" });
             fetchEmployees();
-        } catch (error) {
+        } catch (error: any) {
             toast({
                 title: "Error",
-                description: "Failed to delete employee",
+                description: error.response?.data?.message || error.message || "Failed to delete employee",
                 variant: "destructive",
             });
         }
@@ -262,30 +232,18 @@ export default function Employees() {
                 return;
             }
 
-            const token = getAuthToken();
-
-            const res = await fetch(`${SERVER_URL}/api/employees/assign/${selectedEmployeeId}`, {
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(task),
-            });
-
-            if (!res.ok) {
-                throw new Error("Failed to assign task");
-            }
+            await employeeAPI.assignTask(selectedEmployeeId, task);
 
             toast({ title: "Task assigned successfully" });
             setIsTaskOpen(false);
             setTask({ title: "", description: "", start_time: "", end_time: "", priority: "medium", category: "general" });
             setSelectedEmployeeId("");
             fetchEmployees();
-        } catch (error) {
+        } catch (error: any) {
+            console.log(error)
             toast({
                 title: "Error",
-                description: "Failed to assign task",
+                description: error.response?.data?.message || error.message || "Failed to assign task",
                 variant: "destructive",
             });
         }
@@ -294,42 +252,27 @@ export default function Employees() {
     const handleViewDetails = async (employeeId: string) => {
         try {
             setLoading(true);
-            const token = getAuthToken();
 
-            const tasksRes = await fetch(`${SERVER_URL}/api/employees/${employeeId}/tasks`, {
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
+            const [tasksResponse, statsResponse] = await Promise.all([
+                employeeAPI.getEmployeeTasks(employeeId),
+                employeeAPI.getEmployeeStats(employeeId)
+            ]);
+
+            setSelectedEmployeeTasks(tasksResponse.data.tasks || []);
+            setEmployeeStats({
+                totalTasks: statsResponse.data.employee.totalTasks,
+                completedTasks: statsResponse.data.employee.completedTasks,
+                pendingTasks: statsResponse.data.employee.pendingTasks,
+                inProgressTasks: statsResponse.data.employee.inProgressTasks,
+                avgCompletionTime: statsResponse.data.employee.avgCompletionTime,
+                completionRate: statsResponse.data.employee.completionRate,
             });
-
-            const statsRes = await fetch(`${SERVER_URL}/api/employees/${employeeId}/stats`, {
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-            });
-
-            if (tasksRes.ok && statsRes.ok) {
-                const tasksData = await tasksRes.json();
-                const statsData = await statsRes.json();
-
-                setSelectedEmployeeTasks(tasksData.tasks || []);
-                setEmployeeStats({
-                    totalTasks: statsData.employee.totalTasks,
-                    completedTasks: statsData.employee.completedTasks,
-                    pendingTasks: statsData.employee.pendingTasks,
-                    inProgressTasks: statsData.employee.inProgressTasks,
-                    avgCompletionTime: statsData.employee.avgCompletionTime,
-                    completionRate: statsData.employee.completionRate,
-                });
-                setSelectedEmployeeId(employeeId);
-                setIsDetailOpen(true);
-            }
-        } catch (error) {
+            setSelectedEmployeeId(employeeId);
+            setIsDetailOpen(true);
+        } catch (error: any) {
             toast({
                 title: "Error",
-                description: "Failed to load employee details",
+                description: error.response?.data?.message || error.message || "Failed to load employee details",
                 variant: "destructive",
             });
         } finally {

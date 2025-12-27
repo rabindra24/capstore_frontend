@@ -56,7 +56,7 @@ type MailItem = {
   messageId: string;
 };
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+const SERVER_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 /* ---------------- COMPONENT ---------------- */
 

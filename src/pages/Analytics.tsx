@@ -131,7 +131,7 @@ export default function Analytics() {
         setLoading(true);
 
         let endpoint: string;
-        let params: any = {};
+        let params: any = { period: '30days' }; // Default to 30 days
 
         if (selectedStore === "global") {
           endpoint = "/analytics/global";
@@ -153,18 +153,27 @@ export default function Analytics() {
         const response = await api.get(endpoint, { params });
         const json = response.data;
 
-        const payload = selectedStore === "global" ? json.data.totals : json.data;
+        // Handle different data structures
+        let payload;
+        if (selectedStore === "global") {
+          // Global view - use totals from mock data
+          payload = json.data.totals || json.data;
+        } else {
+          // Single store view
+          payload = json.data;
+        }
 
         setData({
-          totalOrders: payload.totalOrders,
-          totalRevenue: payload.totalRevenue,
-          netRevenue: payload.netRevenue,
+          totalOrders: payload.totalOrders || 0,
+          totalRevenue: payload.totalRevenue || 0,
+          netRevenue: payload.netRevenue || payload.totalRevenue || 0,
           refunds: payload.refunds ?? 0,
-          aov: payload.aov ?? payload.totalRevenue / payload.totalOrders,
+          aov: payload.aov ?? (payload.totalRevenue / Math.max(payload.totalOrders, 1)),
           byDay: payload.byDay ?? {},
           topProducts: payload.topProducts ?? [],
         });
       } catch (e: any) {
+        console.error('Analytics fetch error:', e);
         toast({
           title: "Analytics error",
           description: e.response?.data?.message || "Unable to load analytics data",

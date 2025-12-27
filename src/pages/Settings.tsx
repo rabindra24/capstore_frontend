@@ -20,7 +20,7 @@ import StoresSettings from "@/components/StoresSettings";
 import BusinessSettings from "@/components/settings/BusinessSettings";
 import { Textarea } from "@/components/ui/textarea";
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+const SERVER_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 const ThemeSelector = () => {
   const { theme, setTheme } = useTheme();

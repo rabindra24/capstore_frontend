@@ -19,8 +19,7 @@ import ApiKeysSettings from "@/components/ApiKeysSettings";
 import StoresSettings from "@/components/StoresSettings";
 import BusinessSettings from "@/components/settings/BusinessSettings";
 import { Textarea } from "@/components/ui/textarea";
-
-const SERVER_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+import { SERVER_URL } from "@/config/env";
 
 const ThemeSelector = () => {
   const { theme, setTheme } = useTheme();

@@ -26,8 +26,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-
-const SERVER_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+import { SERVER_URL } from "@/config/env";
 
 type Message = {
     _id: string;

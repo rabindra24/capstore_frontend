@@ -1,6 +1,7 @@
 import axios from "axios";
+import { SERVER_URL, API_BASE_URL } from "../config/env";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+const API_URL = SERVER_URL;
 
 // Create axios instance
 const api = axios.create({
@@ -175,10 +176,10 @@ export const settingsAPI = {
     updateIntegrations: (integrations: any) =>
         api.put("/settings/integrations", integrations),
 
-    updateApiKeys: (apiKeys: any) =>
-        api.put("/settings/api-keys", apiKeys),
+    updateApiKeys: (platform: string, credentials: any) =>
+        api.put("/settings/api-keys", { platform, credentials }),
 
-    getAllApiKeys: () => api.get("/settings/api-keys"),
+    getApiKeys: () => api.get("/settings/api-keys"),
 
     createApiKey: (apiKeyData: any) => api.post("/settings/api-keys", apiKeyData),
 

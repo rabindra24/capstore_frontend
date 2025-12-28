@@ -36,6 +36,7 @@ import { TemplateSelectDialog } from "@/components/mail/TemplateSelectDialog";
 import AiEmailComposer from "@/components/ai/AiEmailComposer";
 import { geminiAI } from "@/lib/api";
 import type { EmailTemplate } from "@/constants/emailTemplates";
+import { SERVER_URL } from "@/config/env";
 
 
 /* ---------------- TYPES ---------------- */
@@ -55,8 +56,6 @@ type MailItem = {
   attachments?: Array<{ filename: string; contentType: string; size: number }>;
   messageId: string;
 };
-
-const SERVER_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 /* ---------------- COMPONENT ---------------- */
 
@@ -232,9 +231,15 @@ export default function Mail() {
     try {
       setSending(true);
 
+      const token = localStorage.getItem("accessToken");
+      const headers: HeadersInit = { "Content-Type": "application/json" };
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
       const res = await fetch(`${SERVER_URL}/api/mail/send`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify({
           to: composeTo,
           subject: composeSubject,
@@ -274,9 +279,15 @@ export default function Mail() {
     try {
       setSending(true);
 
+      const token = localStorage.getItem("accessToken");
+      const headers: HeadersInit = { "Content-Type": "application/json" };
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
       const res = await fetch(`${SERVER_URL}/api/mail/reply`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify({
           messageId: selectedEmail.messageId,
           to: selectedEmail.email,

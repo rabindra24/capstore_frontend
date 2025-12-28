@@ -40,9 +40,9 @@ const App = () => (
                   <Route path="chat" element={<PermissionGuard requiredPermission="chat"><Chat /></PermissionGuard>} />
                   <Route path="analytics" element={<PermissionGuard requiredPermission="analytics"><Analytics /></PermissionGuard>} />
                   <Route path="settings" element={<PermissionGuard requiredPermission="settings"><Settings /></PermissionGuard>} />
-                  {/* <Route path="/*" element={<LogNotFound />} /> */}
                 </Route>
               </Route>
+              {/* 404 Route - Standalone page without AppLayout */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

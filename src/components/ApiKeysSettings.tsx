@@ -56,7 +56,6 @@ export default function ApiKeysSettings() {
     const platforms = [
         { id: "zoom", name: "Zoom", icon: Video, color: "text-blue-500" },
         { id: "gemini", name: "Gemini AI", icon: Brain, color: "text-blue-600" },
-        { id: "twilio", name: "Twilio (WhatsApp)", icon: MessageSquare, color: "text-green-500" },
         { id: "imap", name: "IMAP", icon: Server, color: "text-gray-600" },
         { id: "smtp", name: "SMTP (Email)", icon: Mail, color: "text-red-600" },
     ];

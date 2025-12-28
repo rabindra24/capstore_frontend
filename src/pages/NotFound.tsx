@@ -15,9 +15,9 @@ const NotFound = () => {
       <div className="text-center relative">
         <h1 className="mb-4 text-4xl font-bold">404 (Gravity — 1, Turtle — 0)</h1>
         <p className="mb-4 text-xl text-gray-600">I’m trying my best… the page isn’t.</p>
-        <img src="./src/assets/_404.gif" className="w-[75%] h-[20%] mx-auto" />
-        
-        <Button onClick={()=>navigate('/')} className="bg-[#8EDBDF] hover:bg-[#EB825D] text-gray-800">Back to Business</Button>
+        <img src="/_404.gif" className="w-[75%] h-[20%] mx-auto" />
+
+        <Button onClick={() => navigate('/')} className="bg-[#8EDBDF] hover:bg-[#EB825D] text-gray-800">Back to Business</Button>
       </div>
     </div>
   );
